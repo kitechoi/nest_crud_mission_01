@@ -20,7 +20,8 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-//     모듈명,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
