@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mission01-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3307"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  nest-app:
+    build: .
+    container_name: mission01-nestjs
+    depends_on:
+      - mysql
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: npm run start:dev
+
+volumes:
+  mysql-data:
