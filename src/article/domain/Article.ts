@@ -4,14 +4,17 @@
 export interface ArticleProps {
   title: string;
   content: string;
+  name: string;
   password: string;
   createdAt: Date;
 }
 
 export class Article {
+    // Aggregate 적용 가능
   private constructor(public readonly props: ArticleProps) {}
 
   static create(props: Omit<ArticleProps, 'createdAt'>): Article {
+      // Result 패턴 적용 가능
     return new Article({
       ...props,
       createdAt: new Date(),
@@ -24,6 +27,10 @@ export class Article {
 
   get content(): string {
     return this.props.content;
+  }
+
+  get name(): string {
+      return this.props.name;
   }
 
   get password(): string {
