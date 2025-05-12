@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post, Delete, Put, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Put, Patch, Param } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { CreateArticleUseCaseRequest } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseRequest';
-import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody } from './dto/ArticleControllerRequest'
+import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerUpdateArticleRequestBody } from './dto/ArticleControllerRequest'
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
+import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
 
 @Controller('articles')
 export class ArticleController {
@@ -12,6 +13,7 @@ export class ArticleController {
       private readonly createArticleUseCase: CreateArticleUseCase,
       private readonly deleteArticleUseCase: DeleteArticleUseCase,
       private readonly findAllArticleUseCase: FindAllArticleUseCase,
+      private readonly updateArticleUseCase: UpdateArticleUseCase,
       ) {}
 
 // 글 생성
@@ -53,5 +55,18 @@ export class ArticleController {
       const articles = await this.findAllArticleUseCase.execute();
       return articles;
       }
+
+  // 글 수정
+  @Put(':id')
+  async updateArticle(
+      @Param('id') id: number,
+      @Body() body: ArticleControllerUpdateArticleRequestBody): Promise<void> {
+          await this.updateArticleUseCase.execute(
+              {
+              id: +id,
+              content: body.content,
+              password: body.password,
+              });
+          }
 }
 

@@ -20,5 +20,11 @@ export class ArticleRepositoryImplMapper {
       password: '',
     });
   }
+    static applyToEntity(article: Article, entity: ArticleEntity): void {
+      entity.title = article.title;
+      entity.content = article.content;
+      entity.name = article.name;
+      entity.password = article.password;
+    }
 
 }

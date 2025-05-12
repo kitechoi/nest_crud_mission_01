@@ -8,3 +8,8 @@ export class ArticleControllerCreateArticleRequestBody {
 export class ArticleControllerDeleteArticleRequestBody {
   password: string;
 }
+
+export class ArticleControllerUpdateArticleRequestBody {
+    content: string;
+    password: string;
+}

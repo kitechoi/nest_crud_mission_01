@@ -8,6 +8,7 @@ import { ArticleController } from './presentation/ArticleController';
 import { CreateArticleUseCase } from './application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from './application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from './application/FindAllArticleUseCase/FindAllArticleUseCase';
+import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateArticleUseCase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ArticleEntity])],
@@ -16,6 +17,7 @@ import { FindAllArticleUseCase } from './application/FindAllArticleUseCase/FindA
     CreateArticleUseCase,
     DeleteArticleUseCase,
     FindAllArticleUseCase,
+    UpdateArticleUseCase,
     ArticleRepositoryImplMapper,
     {
       provide: 'ArticleRepository',

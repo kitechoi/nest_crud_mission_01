@@ -6,4 +6,5 @@ export interface ArticleRepository {
   findAll(): Promise<ArticleEntity[]>;
   findById(id: number): Promise<ArticleEntity | null>;
   delete(id: number): Promise<void>;
+  update(article: Article): Promise<void>;
 }
