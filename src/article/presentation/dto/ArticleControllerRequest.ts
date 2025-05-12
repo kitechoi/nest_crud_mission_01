@@ -1,4 +1,4 @@
-export interface CreateArticleUseCaseRequest {
+export class ArticleControllerCreateArticleRequestBody {
   title: string;
   content: string;
   name: string;

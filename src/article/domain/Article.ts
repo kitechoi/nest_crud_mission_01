@@ -6,20 +6,25 @@ export interface ArticleProps {
   content: string;
   name: string;
   password: string;
-  createdAt: Date;
 }
 
 export class Article {
     // Aggregate 적용 가능
-  private constructor(public readonly props: ArticleProps) {}
+  private constructor(public readonly props: ArticleProps) {
+      }
 
-  static create(props: Omit<ArticleProps, 'createdAt'>): Article {
+  static create( props: ArticleProps ): Article {
       // Result 패턴 적용 가능
     return new Article({
       ...props,
-      createdAt: new Date(),
     });
   }
+
+  // DB에서 조회할 때
+  static restore(props: ArticleProps): Article {
+    return new Article(props);
+   }
+
 
   get title(): string {
     return this.props.title;
@@ -37,9 +42,6 @@ export class Article {
     return this.props.password;
   }
 
-  get createdAt(): Date {
-    return this.props.createdAt;
-  }
 }
 
 // 비밀번호 검사 함수
