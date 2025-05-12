@@ -15,14 +15,14 @@ export class Article {
 
   static create( props: ArticleProps ): Article {
       // Result 패턴 적용 가능
-    return new Article({
-      ...props,
-    });
+    return new Article(props);
   }
 
   // DB에서 조회할 때
-  static restore(props: ArticleProps): Article {
-    return new Article(props);
+  static retrieve(props: ArticleProps): Article {
+    return new Article({
+      ...props,
+    });
    }
 
 

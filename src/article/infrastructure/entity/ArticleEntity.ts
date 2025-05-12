@@ -19,5 +19,4 @@ export class ArticleEntity extends BaseEntity{
 
   @CreateDateColumn()
   created_at: Date;
-
 }

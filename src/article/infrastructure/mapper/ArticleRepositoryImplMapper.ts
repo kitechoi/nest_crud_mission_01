@@ -13,11 +13,11 @@ export class ArticleRepositoryImplMapper {
   }
 
   static toDomain(entity: ArticleEntity): Article {
-    return Article.restore({
+    return Article.retrieve({
       title: entity.title,
       content: entity.content,
       name: entity.name,
-      password: entity.password,
+      password: '',
     });
   }
 
