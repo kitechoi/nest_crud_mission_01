@@ -4,3 +4,7 @@ export class ArticleControllerCreateArticleRequestBody {
   name: string;
   password: string;
 }
+
+export class ArticleControllerDeleteArticleRequestBody {
+  password: string;
+}

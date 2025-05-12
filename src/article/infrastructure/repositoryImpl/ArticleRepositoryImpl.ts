@@ -21,5 +21,12 @@ export class ArticleRepositoryImpl implements ArticleRepository{
   async findAll(): Promise<ArticleEntity[]> {
     return this.repo.find();
   }
-}
 
+  async findById(id: number): Promise<ArticleEntity | null> {
+      return await this.repo.findOne({ where: { id } });
+    }
+
+  async delete(id: number): Promise<void> {
+      await this.repo.delete(id);
+    }
+}
