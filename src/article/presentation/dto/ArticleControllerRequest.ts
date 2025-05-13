@@ -10,6 +10,15 @@ export class ArticleControllerDeleteArticleRequestBody {
 }
 
 export class ArticleControllerUpdateArticleRequestBody {
+    title: string;
     content: string;
     password: string;
+}
+
+export class ArticleControllerDeleteArticleRequestParam {
+  id: number;
+}
+
+export class ArticleControllerUpdateArticleRequestParam {
+  id: number;
 }

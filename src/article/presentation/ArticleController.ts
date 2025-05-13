@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Delete, Put, Patch, Param } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { CreateArticleUseCaseRequest } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseRequest';
-import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerUpdateArticleRequestBody } from './dto/ArticleControllerRequest'
+import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerUpdateArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest'
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
@@ -20,7 +20,7 @@ export class ArticleController {
   @Post()
   async createArticle(
       @Body() body: ArticleControllerCreateArticleRequestBody) {
-    await this.createArticleUseCase.execute(
+    const article = await this.createArticleUseCase.execute(
     {
           title: body.title,
           content: body.content,
@@ -29,7 +29,8 @@ export class ArticleController {
         });
 
     return {
-        ok: true
+        ok: true,
+        article
         // http 성공 응답 코드 내려줘야 하고
         // 생성 객체도 내려줘야 함.
         };
@@ -38,10 +39,10 @@ export class ArticleController {
   // 글 삭제
   @Delete(':id')
   async deleteArticle(
-      @Param('id') id: number,
+      @Param() params: ArticleControllerDeleteArticleRequestParam,
       @Body() body: ArticleControllerDeleteArticleRequestBody): Promise<void> {
       await this.deleteArticleUseCase.execute({
-        id: +id,
+        id: params.id,
         password: body.password,
       });
     }
@@ -57,13 +58,15 @@ export class ArticleController {
       }
 
   // 글 수정
-  @Put(':id')
+  // DB 조회 먼저 하지 말고, controller에 req이 들어온 시점에 변경내용 유효성 검사를 먼저.
+  @Patch(':id')
   async updateArticle(
-      @Param('id') id: number,
+      @Param() params: ArticleControllerUpdateArticleRequestParam,
       @Body() body: ArticleControllerUpdateArticleRequestBody): Promise<void> {
           await this.updateArticleUseCase.execute(
               {
-              id: +id,
+              id: params.id,
+              title: body.title,
               content: body.content,
               password: body.password,
               });

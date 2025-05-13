@@ -8,7 +8,6 @@ export class ArticleRepositoryImplMapper {
     entity.content = article.content;
     entity.name = article.name;
     entity.password = article.password;
-
     return entity;
   }
 
@@ -17,14 +16,7 @@ export class ArticleRepositoryImplMapper {
       title: entity.title,
       content: entity.content,
       name: entity.name,
-      password: '',
+      password: entity.password,
     });
   }
-    static applyToEntity(article: Article, entity: ArticleEntity): void {
-      entity.title = article.title;
-      entity.content = article.content;
-      entity.name = article.name;
-      entity.password = article.password;
-    }
-
 }

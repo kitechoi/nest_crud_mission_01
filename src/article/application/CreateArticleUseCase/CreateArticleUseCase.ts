@@ -19,9 +19,10 @@ export class CreateArticleUseCase {
 
     // Result<> 등 패턴 도입 가능.
     return {
-      title: article.title,
-      content: article.content,
-      name: article.name,
+      id: saved.id,
+      title: saved.title,
+      content: saved.content,
+      name: saved.name,
     };
   }
 }

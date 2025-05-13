@@ -11,13 +11,15 @@ export class DeleteArticleUseCase {
   ) {}
 
   async execute(request: DeleteArticleUseCaseRequest): Promise<void> {
-    const article = await this.articleRepository.findById(request.id);
+    // 예외처리
+    const entity = await this.articleRepository.findById(request.id);
 
-    // 아래 책임은 도메인이 져야 하지 않을까??
-    if (!article) {
+
+    if (!entity) {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
-    if (article.password !== request.password) {
+
+    if (entity.password !== request.password) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
     await this.articleRepository.delete(request.id);

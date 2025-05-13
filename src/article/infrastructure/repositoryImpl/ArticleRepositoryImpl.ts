@@ -19,9 +19,12 @@ export class ArticleRepositoryImpl implements ArticleRepository{
     return await this.repo.save(entity);
   }
 
-  async findAll(): Promise<ArticleEntity[]> {
-    return this.repo.find();
+
+  async findAll(): Promise<Article[]> {
+    const entities = await this.repo.find();
+    return entities.map(entity => ArticleRepositoryImplMapper.toDomain(entity));
   }
+
 
   async findById(id: number): Promise<ArticleEntity | null> {
       return await this.repo.findOne({ where: { id } });
@@ -30,12 +33,4 @@ export class ArticleRepositoryImpl implements ArticleRepository{
   async delete(id: number): Promise<void> {
       await this.repo.delete(id);
     }
-
-  async update(article: Article): Promise<void> {
-    const entity = await this.repo.findOne({ where: { id: article.id } });
-    if (!entity) throw new Error('수정할 글이 존재하지 않습니다.');
-
-    ArticleRepositoryImplMapper.applyToEntity(article, entity);
-    await this.repo.save(entity);
-  }
 }

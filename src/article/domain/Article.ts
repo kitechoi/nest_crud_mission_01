@@ -25,12 +25,12 @@ export class Article {
     return new Article(props);
   }
 
-  updateContent(changedContent: string) {
-      // 본물 제약 검사
-    if (!changedContent || changedContent.length === 0) {
+  // 본문 제약 검사
+  validateContent(content: string) {
+    if (!content || content.length === 0) {
       throw new Error('내용은 비워둘 수 없습니다.');
     }
-    this.props.content = changedContent;
+    this.props.content = content;
   }
 
   get id(): number | undefined{
