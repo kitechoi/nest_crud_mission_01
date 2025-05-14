@@ -1,6 +1,7 @@
 import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { ArticleId } from '../../domain/vo/ArticleId';
+import { Password } from '../../domain/vo/Password';
 
 export class ArticleRepositoryImplMapper {
   static toEntity(article: Article): ArticleEntity {
@@ -11,7 +12,7 @@ export class ArticleRepositoryImplMapper {
     entity.title = article.title;
     entity.content = article.content;
     entity.name = article.name;
-    entity.password = article.password;
+    entity.password = article.password.getValue();
     return entity;
   }
 
@@ -20,7 +21,7 @@ export class ArticleRepositoryImplMapper {
       title: entity.title,
       content: entity.content,
       name: entity.name,
-      password: entity.password,
+      password: new Password(entity.password),
     });
   }
 }

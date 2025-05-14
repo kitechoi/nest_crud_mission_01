@@ -1,5 +1,6 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Article } from '../../domain/Article';
+import { Password } from '../../domain/vo/Password';
 import {ArticleRepository} from '../../infrastructure/ArticleRepository'
 import { DeleteArticleUseCaseRequest } from './dto/DeleteArticleUseCaseRequest';
 
@@ -14,12 +15,13 @@ export class DeleteArticleUseCase {
     // 예외처리
     const entity = await this.articleRepository.findById(request.id);
 
-
     if (!entity) {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (entity.password !== request.password) {
+    const storedPassword = new Password(entity.password);
+
+    if (!storedPassword.equals(request.password)) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
     await this.articleRepository.delete(request.id);

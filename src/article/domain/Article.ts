@@ -1,4 +1,5 @@
 import { ArticleId } from './vo/ArticleId';
+import { Password } from './vo/Password';
 // 도메인 로직
 
 export interface ArticleProps {
@@ -6,7 +7,7 @@ export interface ArticleProps {
   title: string;
   content: string;
   name: string;
-  password: string;
+  password: Password;
 }
 
 export class Article {
@@ -49,7 +50,7 @@ export class Article {
       return this.props.name;
   }
 
-  get password(): string {
+  get password(): Password {
     return this.props.password;
   }
 

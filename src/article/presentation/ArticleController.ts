@@ -6,6 +6,7 @@ import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/Delete
 import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
+import { Password } from '../domain/vo/Password';
 
 @Controller('articles')
 export class ArticleController {
@@ -25,7 +26,7 @@ export class ArticleController {
           title: body.title,
           content: body.content,
           name: body.name,
-          password: body.password,
+          password: new Password(body.password),
         });
 
     return {
@@ -43,7 +44,7 @@ export class ArticleController {
       @Body() body: ArticleControllerDeleteArticleRequestBody): Promise<void> {
       await this.deleteArticleUseCase.execute({
         id: params.id,
-        password: body.password,
+        password: new Password(body.password),
       });
     }
 
@@ -72,7 +73,7 @@ export class ArticleController {
               id: params.id,
               title: body.title,
               content: body.content,
-              password: body.password,
+              password: new Password(body.password),
               });
           }
 }
