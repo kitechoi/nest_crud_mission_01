@@ -1,8 +1,8 @@
-
+import { ArticleId } from './vo/ArticleId';
 // 도메인 로직
 
 export interface ArticleProps {
-  id?: number;
+  id?: ArticleId;
   title: string;
   content: string;
   name: string;
@@ -33,7 +33,7 @@ export class Article {
     this.props.content = content;
   }
 
-  get id(): number | undefined{
+  get id(): ArticleId | undefined{
     return this.props.id;
   }
 
