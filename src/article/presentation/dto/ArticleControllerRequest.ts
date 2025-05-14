@@ -22,3 +22,8 @@ export class ArticleControllerDeleteArticleRequestParam {
 export class ArticleControllerUpdateArticleRequestParam {
   id: number;
 }
+
+export class ArticleControllerFindAllArticleRequestQuery {
+  page: number;
+  limit: number;
+}

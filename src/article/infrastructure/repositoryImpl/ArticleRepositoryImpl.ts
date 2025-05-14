@@ -20,11 +20,14 @@ export class ArticleRepositoryImpl implements ArticleRepository{
   }
 
 
-  async findAll(): Promise<Article[]> {
-    const entities = await this.repo.find();
-    return entities.map(entity => ArticleRepositoryImplMapper.toDomain(entity));
+  async findAll(limit: number, offset: number): Promise<Article[]> {
+    const entities = await this.repo.find({
+      order: { created_at: 'DESC' },
+      take: limit,
+      skip: offset,
+    });
+    return entities.map((entity) => ArticleRepositoryImplMapper.toDomain(entity));
   }
-
 
   async findById(id: number): Promise<ArticleEntity | null> {
       return await this.repo.findOne({ where: { id } });

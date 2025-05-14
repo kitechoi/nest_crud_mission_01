@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Delete, Put, Patch, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Put, Patch, Param, Query } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { CreateArticleUseCaseRequest } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseRequest';
-import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerUpdateArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest'
+import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerUpdateArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerUpdateArticleRequestParam, ArticleControllerFindAllArticleRequestQuery } from './dto/ArticleControllerRequest'
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
@@ -50,12 +50,16 @@ export class ArticleController {
 // 호출하면 내려주는데 몇개를 내려줄까? => 페이징 로직 관련 로직 위치는 어디에
 // 쿼리 파라미터의 종류: 1. 개수 2. 정렬순서? 3...
 // 삭제된 게시글 번호 비포함하여 active 객체 10개씩.
-
   @Get()
-  async getArticle(): Promise<FindAllArticleUseCaseResponse[]> {
-      const articles = await this.findAllArticleUseCase.execute();
+  async getArticle(
+      @Query() query: ArticleControllerFindAllArticleRequestQuery,
+    ): Promise<FindAllArticleUseCaseResponse[]> {
+      const articles = await this.findAllArticleUseCase.execute({
+          page: query.page,
+          limit: query.limit,
+         });
       return articles;
-      }
+  }
 
   // 글 수정
   // DB 조회 먼저 하지 말고, controller에 req이 들어온 시점에 변경내용 유효성 검사를 먼저.

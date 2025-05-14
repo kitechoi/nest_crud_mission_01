@@ -3,7 +3,7 @@ import {Article} from '../domain/Article'
 
 export interface ArticleRepository {
   save(article: Article): Promise<ArticleEntity>;
-  findAll(): Promise<Article[]>;
+  findAll(limit: number, offset: number): Promise<Article[]>;
   findById(id: number): Promise<ArticleEntity | null>;
   delete(id: number): Promise<void>;
 }
