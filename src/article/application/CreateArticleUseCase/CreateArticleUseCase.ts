@@ -14,10 +14,7 @@ export class CreateArticleUseCase {
   async execute(request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
     const article = Article.create(request);
     const saved = await this.articleRepository.save(article);
-//     this.articles.push(article);
-//     console.log('누적 게시글 목록:', this.articles);
 
-    // Result<> 등 패턴 도입 가능.
     return {
       id: saved.id,
       title: saved.title,

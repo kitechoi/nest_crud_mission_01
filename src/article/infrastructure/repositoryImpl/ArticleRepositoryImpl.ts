@@ -29,9 +29,10 @@ export class ArticleRepositoryImpl implements ArticleRepository{
     return entities.map((entity) => ArticleRepositoryImplMapper.toDomain(entity));
   }
 
-  async findById(id: number): Promise<ArticleEntity | null> {
-      return await this.repo.findOne({ where: { id } });
-    }
+  async findById(id: number): Promise<Article | null> {
+    const entity = await this.repo.findOne({ where: { id } });
+    return entity ? ArticleRepositoryImplMapper.toDomain(entity) : null;
+  }
 
   async delete(id: number): Promise<void> {
       await this.repo.delete(id);

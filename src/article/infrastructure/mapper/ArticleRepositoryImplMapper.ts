@@ -18,10 +18,11 @@ export class ArticleRepositoryImplMapper {
 
   static toDomain(entity: ArticleEntity): Article {
     return Article.retrieve({
+      id: ArticleId.from(entity.id),
       title: entity.title,
       content: entity.content,
       name: entity.name,
-      password: new Password(entity.password),
+      password: Password.from(entity.password),
     });
   }
 }

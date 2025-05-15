@@ -21,6 +21,5 @@ export class FindAllArticleUseCase {
       content: article.content,
       name: article.name,
     }));
-
   }
 }

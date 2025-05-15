@@ -2,39 +2,43 @@ import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nest
 import { Article } from '../../domain/Article';
 import {ArticleRepository} from '../../infrastructure/ArticleRepository';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
+import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Password } from '../../domain/vo/Password';
+import { ArticleId } from '../../domain/vo/ArticleId';
 
 @Injectable()
 export class UpdateArticleUseCase {
   constructor(
-      @Inject('ArticleRepository')
+    @Inject('ArticleRepository')
     private readonly articleRepository: ArticleRepository,
   ) {}
 
-  async execute(request: UpdateArticleUseCaseRequest): Promise<void> {
+  async execute(request: UpdateArticleUseCaseRequest): Promise<UpdateArticleUseCaseResponse> {
+    const article = await this.articleRepository.findById(request.id);
 
-    // 변경내용 유효성 검사 먼저
-
-    const entity = await this.articleRepository.findById(request.id);
-
-    // 게시글 권한 검사 함수 묶을 수 있다.
-    if (!entity) {
+    if (!article) {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
-      const storedPassword = new Password(entity.password);
 
-      if (!storedPassword.equals(request.password)) {
-        throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
-      }
+    if (!article.password.equals(request.password)) {
+      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
+    }
 
-    const article = Article.create({
-      title: typeof request.title !== 'undefined' ? request.title : entity.title,
-      content: typeof request.content !== 'undefined' ? request.content : entity.content,
-      name: entity.name,
-      password: storedPassword});
+    const updated = Article.retrieve({
+      id: article.id,
+      title: typeof request.title !== 'undefined' ? request.title : article.title,
+      content: typeof request.content !== 'undefined' ? request.content : article.content,
+      name: article.name,
+      password: article.password,
+    });
 
-    const saved = await this.articleRepository.save(article);
-          // createAt은 그대로여야 하는데...
-    //
+    const saved = await this.articleRepository.save(updated);
+
+    return {
+      id: saved.id,
+      title: saved.title,
+      content: saved.content,
+      name: saved.name,
+    };
   }
 }

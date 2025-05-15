@@ -7,23 +7,21 @@ import { DeleteArticleUseCaseRequest } from './dto/DeleteArticleUseCaseRequest';
 @Injectable()
 export class DeleteArticleUseCase {
   constructor(
-      @Inject('ArticleRepository')
+    @Inject('ArticleRepository')
     private readonly articleRepository: ArticleRepository,
   ) {}
 
   async execute(request: DeleteArticleUseCaseRequest): Promise<void> {
-    // 예외처리
-    const entity = await this.articleRepository.findById(request.id);
+    const article = await this.articleRepository.findById(request.id);
 
-    if (!entity) {
+    if (!article) {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    const storedPassword = new Password(entity.password);
-
-    if (!storedPassword.equals(request.password)) {
+    if (!article.password.equals(request.password)) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
+
     await this.articleRepository.delete(request.id);
   }
 }

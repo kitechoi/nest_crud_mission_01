@@ -1,6 +1,5 @@
 import { ArticleId } from './vo/ArticleId';
 import { Password } from './vo/Password';
-// 도메인 로직
 
 export interface ArticleProps {
   id?: ArticleId;
@@ -11,27 +10,26 @@ export interface ArticleProps {
 }
 
 export class Article {
-    // Aggregate 적용 가능
-  private constructor(public readonly props: ArticleProps) {
-      }
+  private constructor(private readonly props: ArticleProps) {}
 
-  static create( props: ArticleProps ): Article {
+  static create(props: ArticleProps): Article {
+    if (!props.title || props.title.length > 50) {
+      throw new Error('제목은 50자 이하로 입력해야 합니다.');
+    }
 
-      // Result 패턴 적용 가능
+    if (!props.content || props.content.length > 2000) {
+      throw new Error('본문은 2000자 이하로 입력해야 합니다.');
+    }
+
+    if (!props.name || props.name.length > 20 || /\s/.test(props.name)) {
+      throw new Error('작성자 이름은 20자 이하이며, 공백을 포함할 수 없습니다.');
+    }
+
     return new Article(props);
   }
 
-  // DB에서 조회할 때
   static retrieve(props: ArticleProps): Article {
     return new Article(props);
-  }
-
-  // 본문 제약 검사
-  validateContent(content: string) {
-    if (!content || content.length === 0) {
-      throw new Error('내용은 비워둘 수 없습니다.');
-    }
-    this.props.content = content;
   }
 
   get id(): ArticleId | undefined{
@@ -53,9 +51,4 @@ export class Article {
   get password(): Password {
     return this.props.password;
   }
-
 }
-
-// 비밀번호 검사 함수
-
-// 게시글 수정

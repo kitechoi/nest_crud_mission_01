@@ -1,4 +1,4 @@
-export interface CreateArticleUseCaseResponse {
+export interface UpdateArticleUseCaseResponse {
   id: number;
   title: string;
   content: string;
