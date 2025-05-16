@@ -3,11 +3,8 @@ import { CreateArticleUseCase } from '../application/CreateArticleUseCase/Create
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
-import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
-import { UpdateArticleUseCaseResponse } from '../application/UpdateArticleUseCase/dto/UpdateArticleUseCaseResponse';
-import { CreateArticleUseCaseResponse } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseResponse';
 import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
-import { ArticleControllerUpdateArticleResponse } from './dto/ArticleControllerResponse';
+import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
 import { ArticleId } from '../domain/vo/ArticleId';
 
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
@@ -24,7 +21,7 @@ export class ArticleController {
   @HttpCode(HttpStatus.CREATED)
   async createArticle(
     @Body() body: ArticleControllerCreateArticleRequestBody,
-  ): Promise<{ statusCode: number; ok: true; result: CreateArticleUseCaseResponse }> {
+  ): Promise<{ statusCode: number; ok: true; result: ArticleControllerCreateArticleResponse }> {
     const article = await this.createArticleUseCase.execute({
       title: body.title,
       content: body.content,
@@ -35,7 +32,12 @@ export class ArticleController {
     return {
       statusCode: HttpStatus.CREATED,
       ok: true,
-      result: article,
+      result: {
+        id: (article.article.id as ArticleId).getValue(),
+        title: article.article.title,
+        content: article.article.content,
+        name: article.article.name,
+      },
     };
   }
 
@@ -55,16 +57,22 @@ export class ArticleController {
   @HttpCode(HttpStatus.OK)
   async getArticle(
     @Query() query: ArticleControllerFindAllArticleRequestQuery,
-  ): Promise<{ statusCode: number; ok: true; result: FindAllArticleUseCaseResponse[] }> {
+  ): Promise<{ statusCode: number; ok: true; result: ArticleControllerFineAllArticleResponse[] }> {
     const articles = await this.findAllArticleUseCase.execute({
       page: query.page,
       limit: query.limit,
     });
 
+    const result = articles.map((article) => ({
+      id: (article.article.id as ArticleId).getValue(),
+      title: article.article.title,
+      content: article.article.content,
+    }));
+
     return {
       statusCode: HttpStatus.OK,
       ok: true,
-      result: articles,
+      result: result,
     };
   }
 
