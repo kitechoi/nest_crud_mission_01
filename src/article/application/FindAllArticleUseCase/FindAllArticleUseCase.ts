@@ -1,12 +1,12 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { FindAllArticleUseCaseResponse } from './dto/FindAllArticleUseCaseResponse';
 import { FindAllArticleUseCaseRequest } from './dto/FindAllArticleUseCaseRequest';
-import { ArticleRepository } from '../../infrastructure/ArticleRepository'
+import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository'
 
 @Injectable()
 export class FindAllArticleUseCase {
   constructor(
-    @Inject('ArticleRepository')
+    @Inject(ARTICLE_REPOSITORY)
     private readonly articleRepository: ArticleRepository,
   ) {}
 

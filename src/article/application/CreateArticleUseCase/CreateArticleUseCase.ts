@@ -3,12 +3,12 @@ import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
 import { Password } from '../../domain/vo/Password';
-import { ArticleRepository } from '../../infrastructure/ArticleRepository'
+import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository'
 
 @Injectable()
 export class CreateArticleUseCase {
   constructor(
-      @Inject('ArticleRepository')
+      @Inject(ARTICLE_REPOSITORY)
       private readonly articleRepository:ArticleRepository,
       ) {}
 

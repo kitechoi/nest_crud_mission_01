@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticleEntity } from './infrastructure/entity/ArticleEntity';
-import { ArticleRepository } from './infrastructure/ArticleRepository';
+import { ARTICLE_REPOSITORY } from './infrastructure/ArticleRepository';
 import { ArticleRepositoryImpl } from './infrastructure/repositoryImpl/ArticleRepositoryImpl';
 import { ArticleRepositoryImplMapper } from './infrastructure/mapper/ArticleRepositoryImplMapper';
 import { ArticleController } from './presentation/ArticleController';
@@ -20,7 +20,7 @@ import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateA
     UpdateArticleUseCase,
     ArticleRepositoryImplMapper,
     {
-      provide: 'ArticleRepository',
+      provide: ARTICLE_REPOSITORY,
       useClass: ArticleRepositoryImpl,
     },
   ],

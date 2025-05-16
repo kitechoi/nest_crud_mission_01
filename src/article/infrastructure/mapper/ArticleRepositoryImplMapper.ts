@@ -18,7 +18,7 @@ export class ArticleRepositoryImplMapper {
 
   static toDomain(entity: ArticleEntity): Article {
     return Article.create({
-      id: ArticleId.from(entity.id),
+      id: ArticleId.create(entity.id),
       title: entity.title,
       content: entity.content,
       name: entity.name,
