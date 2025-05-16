@@ -1,5 +1,5 @@
+import { Article } from "src/article/domain/Article";
+
 export interface FindAllArticleUseCaseResponse {
-  title: string;
-  content: string;
-  name: string;
+  article: Article
 }
