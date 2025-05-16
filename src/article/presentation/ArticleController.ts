@@ -7,7 +7,8 @@ import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseC
 import { UpdateArticleUseCaseResponse } from '../application/UpdateArticleUseCase/dto/UpdateArticleUseCaseResponse';
 import { CreateArticleUseCaseResponse } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseResponse';
 import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
-
+import { ArticleControllerUpdateArticleResponse } from './dto/ArticleControllerResponse';
+import { ArticleId } from '../domain/vo/ArticleId';
 
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 @Controller('articles')
@@ -72,8 +73,8 @@ export class ArticleController {
   async updateArticle(
     @Param() params: ArticleControllerUpdateArticleRequestParam,
     @Body() body: ArticleControllerUpdateArticleRequestBody,
-  ): Promise<{ statusCode: number; ok: true; result: UpdateArticleUseCaseResponse }> {
-    const updated = await this.updateArticleUseCase.execute({
+  ): Promise<{ statusCode: number; ok: true; result: ArticleControllerUpdateArticleResponse;}> {
+    const updatedArticle = await this.updateArticleUseCase.execute({
       id: params.id,
       title: body.title,
       content: body.content,
@@ -83,7 +84,11 @@ export class ArticleController {
     return {
       statusCode: HttpStatus.OK,
       ok: true,
-      result: updated,
+      result: {
+        id: (updatedArticle.article.id as ArticleId).getValue(),
+        title: updatedArticle.article.title,
+        content: updatedArticle.article.content,
+      },
     };
   }
 }
