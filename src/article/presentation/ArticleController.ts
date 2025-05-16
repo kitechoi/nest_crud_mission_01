@@ -1,13 +1,13 @@
-import { Body, Controller, Get, Post, Delete, Put, Patch, Param, Query, UsePipes, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
-import { CreateArticleUseCaseRequest } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseRequest';
-import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerUpdateArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerUpdateArticleRequestParam, ArticleControllerFindAllArticleRequestQuery } from './dto/ArticleControllerRequest'
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
-import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
-import { UpdateArticleUseCaseResponse } from '../application/UpdateArticleUseCase/dto/UpdateArticleUseCaseResponse';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
-import { Password } from '../domain/vo/Password';
+import { FindAllArticleUseCaseResponse } from '../application/FindAllArticleUseCase/dto/FindAllArticleUseCaseResponse';
+import { UpdateArticleUseCaseResponse } from '../application/UpdateArticleUseCase/dto/UpdateArticleUseCaseResponse';
+import { CreateArticleUseCaseResponse } from '../application/CreateArticleUseCase/dto/CreateArticleUseCaseResponse';
+import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
+
 
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 @Controller('articles')
@@ -20,23 +20,23 @@ export class ArticleController {
       ) {}
 
   @Post()
-    @HttpCode(HttpStatus.CREATED)
-    async createArticle(
-      @Body() body: ArticleControllerCreateArticleRequestBody,
-    ) {
-      const article = await this.createArticleUseCase.execute({
-        title: body.title,
-        content: body.content,
-        name: body.name,
-        password: body.password,
-      });
+  @HttpCode(HttpStatus.CREATED)
+  async createArticle(
+    @Body() body: ArticleControllerCreateArticleRequestBody,
+  ): Promise<{ statusCode: number; ok: true; result: CreateArticleUseCaseResponse }> {
+    const article = await this.createArticleUseCase.execute({
+      title: body.title,
+      content: body.content,
+      name: body.name,
+      password: body.password,
+    });
 
-      return {
-        statusCode: HttpStatus.CREATED,
-        ok: true,
-        result: article,
-      };
-    }
+    return {
+      statusCode: HttpStatus.CREATED,
+      ok: true,
+      result: article,
+    };
+  }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -1,10 +1,9 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { Article } from '../../domain/Article';
-import {ArticleRepository} from '../../infrastructure/ArticleRepository';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
+import { Article } from '../../domain/Article';
 import { Password } from '../../domain/vo/Password';
-import { ArticleId } from '../../domain/vo/ArticleId';
+import { ArticleRepository } from '../../infrastructure/ArticleRepository';
 
 @Injectable()
 export class UpdateArticleUseCase {

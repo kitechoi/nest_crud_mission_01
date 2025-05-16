@@ -1,7 +1,7 @@
 import { Article } from '../../domain/Article';
-import { ArticleEntity } from '../entity/ArticleEntity';
 import { ArticleId } from '../../domain/vo/ArticleId';
 import { Password } from '../../domain/vo/Password';
+import { ArticleEntity } from '../entity/ArticleEntity';
 
 export class ArticleRepositoryImplMapper {
   static toEntity(article: Article): ArticleEntity {

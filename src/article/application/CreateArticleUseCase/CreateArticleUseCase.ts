@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Article } from '../../domain/Article';
 import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
-import {ArticleRepository} from '../../infrastructure/ArticleRepository'
+import { Article } from '../../domain/Article';
 import { Password } from '../../domain/vo/Password';
+import { ArticleRepository } from '../../infrastructure/ArticleRepository'
 
 @Injectable()
 export class CreateArticleUseCase {

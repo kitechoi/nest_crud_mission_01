@@ -1,4 +1,4 @@
-import {Article} from '../domain/Article'
+import { Article } from '../domain/Article'
 
 export interface ArticleRepository {
   save(article: Article): Promise<Article>;
