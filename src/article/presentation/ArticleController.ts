@@ -19,24 +19,24 @@ export class ArticleController {
       private readonly updateArticleUseCase: UpdateArticleUseCase,
       ) {}
 
-@Post()
-  @HttpCode(HttpStatus.CREATED)
-  async createArticle(
-    @Body() body: ArticleControllerCreateArticleRequestBody,
-  ) {
-    const article = await this.createArticleUseCase.execute({
-      title: body.title,
-      content: body.content,
-      name: body.name,
-      password: Password.create(body.password),
-    });
+  @Post()
+    @HttpCode(HttpStatus.CREATED)
+    async createArticle(
+      @Body() body: ArticleControllerCreateArticleRequestBody,
+    ) {
+      const article = await this.createArticleUseCase.execute({
+        title: body.title,
+        content: body.content,
+        name: body.name,
+        password: Password.create(body.password),
+      });
 
-    return {
-      statusCode: HttpStatus.CREATED,
-      ok: true,
-      result: article,
-    };
-  }
+      return {
+        statusCode: HttpStatus.CREATED,
+        ok: true,
+        result: article,
+      };
+    }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)

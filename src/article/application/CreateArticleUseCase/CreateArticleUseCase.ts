@@ -13,13 +13,10 @@ export class CreateArticleUseCase {
 
   async execute(request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
     const article = Article.create(request);
-    const saved = await this.articleRepository.save(article);
+    const savedArticle = await this.articleRepository.save(article);
 
     return {
-      id: saved.id,
-      title: saved.title,
-      content: saved.content,
-      name: saved.name,
+      article: savedArticle
     };
   }
 }

@@ -32,13 +32,10 @@ export class UpdateArticleUseCase {
       password: article.password,
     });
 
-    const saved = await this.articleRepository.save(updated);
+    const savedArticle = await this.articleRepository.save(updated);
 
     return {
-      id: saved.id,
-      title: saved.title,
-      content: saved.content,
-      name: saved.name,
+      article: savedArticle
     };
   }
 }

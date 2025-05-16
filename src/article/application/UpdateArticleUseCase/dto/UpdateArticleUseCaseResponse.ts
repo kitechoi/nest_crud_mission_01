@@ -1,6 +1,5 @@
+import { Article } from '../../../domain/Article';
+
 export interface UpdateArticleUseCaseResponse {
-  id: number;
-  title: string;
-  content: string;
-  name: string;
+  article: Article;
 }
