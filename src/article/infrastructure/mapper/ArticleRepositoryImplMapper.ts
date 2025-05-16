@@ -17,12 +17,12 @@ export class ArticleRepositoryImplMapper {
   }
 
   static toDomain(entity: ArticleEntity): Article {
-    return Article.retrieve({
+    return Article.create({
       id: ArticleId.from(entity.id),
       title: entity.title,
       content: entity.content,
       name: entity.name,
-      password: Password.from(entity.password),
+      password: Password.create(entity.password),
     });
   }
 }

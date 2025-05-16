@@ -24,7 +24,7 @@ export class UpdateArticleUseCase {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
 
-    const updated = Article.retrieve({
+    const updated = Article.create({
       id: article.id,
       title: typeof request.title !== 'undefined' ? request.title : article.title,
       content: typeof request.content !== 'undefined' ? request.content : article.content,

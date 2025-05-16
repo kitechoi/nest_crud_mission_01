@@ -28,10 +28,6 @@ export class Article {
     return new Article(props);
   }
 
-  static retrieve(props: ArticleProps): Article {
-    return new Article(props);
-  }
-
   get id(): ArticleId | undefined{
     return this.props.id;
   }

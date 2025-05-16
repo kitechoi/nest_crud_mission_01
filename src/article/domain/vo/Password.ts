@@ -8,10 +8,6 @@ export class Password {
     return new Password(value);
   }
 
-  static from(value: string): Password {
-    return new Password(value);
-  }
-
   getValue(): string {
     return this.value;
   }
