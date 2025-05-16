@@ -33,7 +33,7 @@ export class ArticleController {
       statusCode: HttpStatus.CREATED,
       ok: true,
       result: {
-        id: (article.article.id as ArticleId).getValue(),
+        id: (article.article.id!).getValue(),
         title: article.article.title,
         content: article.article.content,
         name: article.article.name,
@@ -64,7 +64,7 @@ export class ArticleController {
     });
 
     const result = articles.map((article) => ({
-      id: (article.article.id as ArticleId).getValue(),
+      id: (article.article.id!).getValue(),
       title: article.article.title,
       content: article.article.content,
     }));
@@ -93,7 +93,7 @@ export class ArticleController {
       statusCode: HttpStatus.OK,
       ok: true,
       result: {
-        id: (updatedArticle.article.id as ArticleId).getValue(),
+        id: (updatedArticle.article.id!).getValue(),
         title: updatedArticle.article.title,
         content: updatedArticle.article.content,
       },
