@@ -16,6 +16,7 @@ export class FindAllArticleUseCase {
     const offset = (page - 1) * limit;
 
     const articles = await this.articleRepository.findAll(limit, offset);
+    
     return articles.map((article) => ({
       article:article
     }));

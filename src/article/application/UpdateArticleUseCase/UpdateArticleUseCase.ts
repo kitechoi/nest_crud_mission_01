@@ -20,9 +20,11 @@ export class UpdateArticleUseCase {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (!article.password.equals(request.password)) {
+    if (!article.password.equals(Password.create(request.password))) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
+
+    // 위에서 Password 일치 검사를 하면서 유효성 검사를 했는데, 아래 create에서 비밀번호 유효성 검사가 중복되고 있음
 
     const updated = Article.create({
       id: article.id,

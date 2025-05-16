@@ -11,17 +11,17 @@ import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapp
 export class ArticleRepositoryImpl implements ArticleRepository{
   constructor(
     @InjectRepository(ArticleEntity)
-    private readonly repo: Repository<ArticleEntity>,
+    private readonly articleEntityRepository: Repository<ArticleEntity>,
   ) {}
 
   async save(article: Article): Promise<Article> {
-    const entity = await this.repo.save(ArticleRepositoryImplMapper.toEntity(article));
+    const entity = await this.articleEntityRepository.save(ArticleRepositoryImplMapper.toEntity(article));
     return ArticleRepositoryImplMapper.toDomain(entity);
   }
 
 
   async findAll(limit: number, offset: number): Promise<Article[]> {
-    const entities = await this.repo.find({
+    const entities = await this.articleEntityRepository.find({
       order: { created_at: 'DESC' },
       take: limit,
       skip: offset,
@@ -30,11 +30,11 @@ export class ArticleRepositoryImpl implements ArticleRepository{
   }
 
   async findById(id: number): Promise<Article | null> {
-    const entity = await this.repo.findOne({ where: { id } });
+    const entity = await this.articleEntityRepository.findOne({ where: { id } });
     return entity ? ArticleRepositoryImplMapper.toDomain(entity) : null;
   }
 
   async delete(id: number): Promise<void> {
-      await this.repo.delete(id);
+      await this.articleEntityRepository.delete(id);
     }
 }

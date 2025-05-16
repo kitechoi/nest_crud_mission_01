@@ -28,7 +28,7 @@ export class ArticleController {
         title: body.title,
         content: body.content,
         name: body.name,
-        password: Password.create(body.password),
+        password: body.password,
       });
 
       return {
@@ -46,7 +46,7 @@ export class ArticleController {
   ): Promise<void> {
     await this.deleteArticleUseCase.execute({
       id: params.id,
-      password: Password.create(body.password),
+      password: body.password,
     });
   }
 
@@ -77,7 +77,7 @@ export class ArticleController {
       id: params.id,
       title: body.title,
       content: body.content,
-      password: Password.create(body.password),
+      password: body.password,
     });
 
     return {
