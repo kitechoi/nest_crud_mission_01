@@ -8,19 +8,19 @@ import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/Arti
 @Injectable()
 export class CreateArticleUseCase {
   constructor(
-      @Inject(ARTICLE_REPOSITORY)
-      private readonly articleRepository:ArticleRepository,
-      ) {}
+    @Inject(ARTICLE_REPOSITORY)
+    private readonly articleRepository: ArticleRepository,
+  ) { }
 
   async execute(request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
 
     const article = Article.create({
       title: request.title,
-      content:request.content,
+      content: request.content,
       name: request.name,
       password: Password.create(request.password)
     });
-    
+
     const savedArticle = await this.articleRepository.save(article);
 
     return {

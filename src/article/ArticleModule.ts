@@ -25,4 +25,4 @@ import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateA
     },
   ],
 })
-export class ArticleModule {}
+export class ArticleModule { }

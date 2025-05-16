@@ -8,7 +8,7 @@ export class DeleteArticleUseCase {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
     private readonly articleRepository: ArticleRepository,
-  ) {}
+  ) { }
 
   async execute(request: DeleteArticleUseCaseRequest): Promise<void> {
     const article = await this.articleRepository.findById(request.id);

@@ -4,7 +4,7 @@ export class ArticleControllerCreateArticleResponse {
   content: string;
   name: string;
 }
-  
+
 export class ArticleControllerUpdateArticleResponse {
   id: number;
   title: string;

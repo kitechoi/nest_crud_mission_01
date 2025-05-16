@@ -10,7 +10,7 @@ export interface ArticleProps {
 }
 
 export class Article {
-  private constructor(private readonly props: ArticleProps) {}
+  private constructor(private readonly props: ArticleProps) { }
 
   static create(props: ArticleProps): Article {
     if (!props.title || props.title.length > 50) {
@@ -28,7 +28,7 @@ export class Article {
     return new Article(props);
   }
 
-  get id(): ArticleId | undefined{
+  get id(): ArticleId | undefined {
     return this.props.id;
   }
 
@@ -41,7 +41,7 @@ export class Article {
   }
 
   get name(): string {
-      return this.props.name;
+    return this.props.name;
   }
 
   get password(): Password {

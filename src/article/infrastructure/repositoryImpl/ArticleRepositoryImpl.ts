@@ -8,11 +8,11 @@ import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapp
 
 
 @Injectable()
-export class ArticleRepositoryImpl implements ArticleRepository{
+export class ArticleRepositoryImpl implements ArticleRepository {
   constructor(
     @InjectRepository(ArticleEntity)
     private readonly articleEntityRepository: Repository<ArticleEntity>,
-  ) {}
+  ) { }
 
   async save(article: Article): Promise<Article> {
     const entity = await this.articleEntityRepository.save(ArticleRepositoryImplMapper.toEntity(article));
@@ -35,6 +35,6 @@ export class ArticleRepositoryImpl implements ArticleRepository{
   }
 
   async delete(id: number): Promise<void> {
-      await this.articleEntityRepository.delete(id);
-    }
+    await this.articleEntityRepository.delete(id);
+  }
 }

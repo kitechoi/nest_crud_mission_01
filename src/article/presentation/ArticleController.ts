@@ -11,11 +11,11 @@ import { ArticleId } from '../domain/vo/ArticleId';
 @Controller('articles')
 export class ArticleController {
   constructor(
-      private readonly createArticleUseCase: CreateArticleUseCase,
-      private readonly deleteArticleUseCase: DeleteArticleUseCase,
-      private readonly findAllArticleUseCase: FindAllArticleUseCase,
-      private readonly updateArticleUseCase: UpdateArticleUseCase,
-      ) {}
+    private readonly createArticleUseCase: CreateArticleUseCase,
+    private readonly deleteArticleUseCase: DeleteArticleUseCase,
+    private readonly findAllArticleUseCase: FindAllArticleUseCase,
+    private readonly updateArticleUseCase: UpdateArticleUseCase,
+  ) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -81,7 +81,7 @@ export class ArticleController {
   async updateArticle(
     @Param() params: ArticleControllerUpdateArticleRequestParam,
     @Body() body: ArticleControllerUpdateArticleRequestBody,
-  ): Promise<{ statusCode: number; ok: true; result: ArticleControllerUpdateArticleResponse;}> {
+  ): Promise<{ statusCode: number; ok: true; result: ArticleControllerUpdateArticleResponse; }> {
     const updatedArticle = await this.updateArticleUseCase.execute({
       id: params.id,
       title: body.title,

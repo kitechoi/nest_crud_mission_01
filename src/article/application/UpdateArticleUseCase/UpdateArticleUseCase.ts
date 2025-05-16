@@ -10,7 +10,7 @@ export class UpdateArticleUseCase {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
     private readonly articleRepository: ArticleRepository,
-  ) {}
+  ) { }
 
   async execute(request: UpdateArticleUseCaseRequest): Promise<UpdateArticleUseCaseResponse> {
     const article = await this.articleRepository.findById(request.id);
