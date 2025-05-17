@@ -1,31 +1,22 @@
 export class Result<T> {
-  private readonly _value?: T;
-
-  public isSuccess: boolean;
-  public isFailure: boolean;
-  public error?: T | string;
-
-  public constructor(isSuccess: boolean, error?: T | string, value?: T) {
+  public constructor(
+    public isSuccess: boolean, 
+    public error?: string, 
+    private _value?: T,
+  ) {
     if (isSuccess && error) {
       throw new Error('InvalidOperation: A result cannot be successful and contain an error');
     }
     if (!isSuccess && !error) {
       throw new Error('InvalidOperation: A failing result needs to contain an error message');
     }
-
-    this.isSuccess = isSuccess;
-    this.isFailure = !isSuccess;
-    this.error = error;
-    this._value = value;
-
     Object.freeze(this);
   }
 
   public get value(): T {
     if (!this.isSuccess) {
-      throw new Error(this.error as string);
+      throw new Error(this.error);
     }
-
     return this._value as T;
   }
 
@@ -39,14 +30,5 @@ export class Result<T> {
 
   public static fail<U>(error: string): Result<U> {
     return new Result<U>(false, error);
-  }
-
-  public static combine(results: Result<unknown>[]): Result<unknown> {
-    for (const result of results) {
-      if (result.isFailure) {
-        return result;
-      }
-    }
-    return Result.ok();
   }
 }

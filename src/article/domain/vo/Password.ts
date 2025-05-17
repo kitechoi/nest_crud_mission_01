@@ -1,11 +1,14 @@
-export class Password {
-  private constructor(private readonly value: string) { }
+import { Result } from '../../../shared/core/Result';
 
-  static create(value: string): Password {
+export class Password {
+  private constructor(private readonly value: string) {
+  }
+
+  static create(value: string): Result<Password> {
     if (!/^[a-zA-Z0-9]{4,10}$/.test(value)) {
-      throw new Error('Invalid password');
+      return Result.fail('비밀번호는 4~10자의 영문자/숫자만 가능합니다.');
     }
-    return new Password(value);
+    return Result.ok(new Password(value));
   }
 
   getValue(): string {

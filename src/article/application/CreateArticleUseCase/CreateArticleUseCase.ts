@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
@@ -13,18 +13,24 @@ export class CreateArticleUseCase {
   ) { }
 
   async execute(request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
+    const passwordResult = Password.create(request.password);
+    if (!passwordResult.isSuccess) {
+      throw new BadRequestException(passwordResult.error);
+    }
 
-    const article = Article.create({
+    const articleResult = Article.create({
       title: request.title,
       content: request.content,
       name: request.name,
-      password: Password.create(request.password)
+      password: passwordResult.value,
     });
 
-    const savedArticle = await this.articleRepository.save(article);
+    if (!articleResult.isSuccess) {
+      throw new BadRequestException(articleResult.error);
+    }
 
+    const savedArticle = await this.articleRepository.save(articleResult.value);
     return {
-      article: savedArticle
-    };
+      article: savedArticle};
   }
 }

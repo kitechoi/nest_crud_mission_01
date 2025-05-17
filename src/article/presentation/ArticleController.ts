@@ -22,21 +22,21 @@ export class ArticleController {
   async createArticle(
     @Body() body: ArticleControllerCreateArticleRequestBody,
   ): Promise<{ statusCode: number; ok: true; result: ArticleControllerCreateArticleResponse }> {
-    const article = await this.createArticleUseCase.execute({
-      title: body.title,
-      content: body.content,
-      name: body.name,
-      password: body.password,
-    });
+  const { article } = await this.createArticleUseCase.execute({
+    title: body.title,
+    content: body.content,
+    name: body.name,
+    password: body.password,
+  });
 
-    return {
-      statusCode: HttpStatus.CREATED,
-      ok: true,
-      result: {
-        id: (article.article.id!).getValue(),
-        title: article.article.title,
-        content: article.article.content,
-        name: article.article.name,
+  return {
+    statusCode: HttpStatus.CREATED,
+    ok: true,
+    result: {
+        id: article.id!.getValue(),
+        title: article.title,
+        content: article.content,
+        name: article.name,
       },
     };
   }

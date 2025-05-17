@@ -1,5 +1,6 @@
 import { ArticleId } from './vo/ArticleId';
 import { Password } from './vo/Password';
+import { Result } from '../../shared/core/Result';
 
 export interface ArticleProps {
   id?: ArticleId;
@@ -10,22 +11,23 @@ export interface ArticleProps {
 }
 
 export class Article {
-  private constructor(private readonly props: ArticleProps) { }
+  private constructor(private readonly props: ArticleProps) {
+  }
 
-  static create(props: ArticleProps): Article {
+  static create(props: ArticleProps): Result<Article> {
     if (!props.title || props.title.length > 50) {
-      throw new Error('제목은 50자 이하로 입력해야 합니다.');
+      return Result.fail('제목은 50자 이하로 입력해야 합니다.');
     }
 
     if (!props.content || props.content.length > 2000) {
-      throw new Error('본문은 2000자 이하로 입력해야 합니다.');
+      return Result.fail('본문은 2000자 이하로 입력해야 합니다.');
     }
 
     if (!props.name || props.name.length > 20 || /\s/.test(props.name)) {
-      throw new Error('작성자 이름은 20자 이하이며, 공백을 포함할 수 없습니다.');
+      return Result.fail('작성자 이름은 20자 이하이며, 공백을 포함할 수 없습니다.');
     }
 
-    return new Article(props);
+    return Result.ok(new Article(props));
   }
 
   get id(): ArticleId | undefined {

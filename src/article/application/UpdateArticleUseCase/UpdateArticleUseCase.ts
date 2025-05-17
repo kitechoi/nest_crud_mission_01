@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
@@ -19,13 +19,18 @@ export class UpdateArticleUseCase {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (!article.password.equals(Password.create(request.password))) {
+    const pwResult = Password.create(request.password);
+    if (!pwResult.isSuccess) {
+      throw new BadRequestException(pwResult.error);
+    }
+
+    if (!article.password.equals(pwResult.value)) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
 
     // 위에서 Password 일치 검사를 하면서 유효성 검사를 했는데, 아래 create에서 비밀번호 유효성 검사가 중복되고 있음
 
-    const updated = Article.create({
+    const updatedArticle = Article.create({
       id: article.id,
       title: typeof request.title !== 'undefined' ? request.title : article.title,
       content: typeof request.content !== 'undefined' ? request.content : article.content,
@@ -33,7 +38,11 @@ export class UpdateArticleUseCase {
       password: article.password,
     });
 
-    const savedArticle = await this.articleRepository.save(updated);
+    if (!updatedArticle.isSuccess) {
+      throw new BadRequestException(updatedArticle.error);
+    }
+
+    const savedArticle = await this.articleRepository.save(updatedArticle.value);
 
     return {
       article: savedArticle

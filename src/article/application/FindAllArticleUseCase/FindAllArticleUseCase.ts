@@ -8,7 +8,7 @@ export class FindAllArticleUseCase {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
     private readonly articleRepository: ArticleRepository,
-  ) {}
+  ) { }
 
   async execute(request: FindAllArticleUseCaseRequest): Promise<FindAllArticleUseCaseResponse[]> {
     const { page, limit } = request;

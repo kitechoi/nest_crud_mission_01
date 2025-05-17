@@ -1,12 +1,14 @@
+import { Result } from '../../../shared/core/Result';
+
 export class ArticleId {
   private constructor(private readonly value: number) {
   }
 
-  static create(value: number): ArticleId {
+  static create(value: number): Result<ArticleId> {
     if (!Number.isInteger(value) || value <= 0) {
-      throw new Error('유효하지 않은 ID입니다.');
+      return Result.fail("유효하지 않은 Id입니다.")
     }
-    return new ArticleId(value);
+    return Result.ok(new ArticleId(value));
   }
 
   getValue(): number {
