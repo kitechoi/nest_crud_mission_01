@@ -3,6 +3,7 @@ import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
 import { Password } from '../../domain/vo/Password';
+import { ArticleId } from '../../domain/vo/ArticleId';
 import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository';
 
 @Injectable()
@@ -13,18 +14,35 @@ export class UpdateArticleUseCase {
   ) { }
 
   async execute(request: UpdateArticleUseCaseRequest): Promise<UpdateArticleUseCaseResponse> {
+    
+    const articleIdResult = ArticleId.create(request.id);
+    if (!articleIdResult.isSuccess) {
+      throw new BadRequestException(articleIdResult.error);
+    }
+
+    const passwordResult = Password.create(request.password);
+    if (!passwordResult.isSuccess) {
+      throw new BadRequestException(passwordResult.error);
+    }
+
+    const articleTempResult = Article.create({
+      id: articleIdResult.value,
+      title: typeof request.title !== 'undefined' ? request.title : "임시제목입니다",
+      content: typeof request.content !== 'undefined' ? request.content : "임시본문입니다",
+      name: "임시이름입니다",
+      password: passwordResult.value,
+    });
+    if (!articleTempResult.isSuccess) {
+      throw new BadRequestException(articleTempResult.error);
+    }
+
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    const pwResult = Password.create(request.password);
-    if (!pwResult.isSuccess) {
-      throw new BadRequestException(pwResult.error);
-    }
-
-    if (!article.password.equals(pwResult.value)) {
+    if (!article.password.equals(passwordResult.value)) {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
 
