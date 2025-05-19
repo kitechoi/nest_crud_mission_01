@@ -20,8 +20,4 @@ export class Password extends ValueObject<PasswordProps> {
   getValue(): string {
     return this.props.password;
   }
-
-  equals(other: Password): boolean {
-    return this.props.password === other.getValue();
-  }
 }

@@ -5,8 +5,7 @@ import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/Arti
 import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
-export class FindAllArticleUseCase
-  implements    UseCase<FindAllArticleUseCaseRequest, FindAllArticleUseCaseResponse>
+export class FindAllArticleUseCase implements UseCase<FindAllArticleUseCaseRequest, FindAllArticleUseCaseResponse>
 {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
