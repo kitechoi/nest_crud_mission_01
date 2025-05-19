@@ -16,7 +16,7 @@ export class CreateArticleUseCase implements UseCase<CreateArticleUseCaseRequest
 
   async execute(
     request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
-    const passwordResult = Password.create(request.password);
+    const passwordResult = Password.create({ password: request.password });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }

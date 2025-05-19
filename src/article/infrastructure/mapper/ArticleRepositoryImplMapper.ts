@@ -26,7 +26,7 @@ export class ArticleRepositoryImplMapper {
       );
     }
 
-    const pwResult = Password.create(entity.password);
+    const pwResult = Password.create({ password: entity.password });
     if (!pwResult.isSuccess) {
       throw new InternalServerErrorException(
         `Password 생성 실패: ${pwResult.error}`,

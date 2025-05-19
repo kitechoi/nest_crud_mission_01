@@ -1,20 +1,27 @@
+import { ValueObject } from 'src/shared/core/domain/ValueObject';
 import { Result } from '../../../shared/core/domain/Result';
 
-export class Password {
-  private constructor(private readonly value: string) {}
+interface PasswordProps {
+  password: string;
+}
 
-  static create(value: string): Result<Password> {
-    if (!/^[a-zA-Z0-9]{4,10}$/.test(value)) {
+export class Password extends ValueObject<PasswordProps> {
+  private constructor(props: PasswordProps) {
+    super(props);
+  }
+
+  static create(props: PasswordProps): Result<Password> {
+    if (!/^[a-zA-Z0-9]{4,10}$/.test(props.password)) {
       return Result.fail('비밀번호는 4~10자의 영문자/숫자만 가능합니다.');
     }
-    return Result.ok(new Password(value));
+    return Result.ok(new Password(props));
   }
 
   getValue(): string {
-    return this.value;
+    return this.props.password;
   }
 
   equals(other: Password): boolean {
-    return this.value === other.getValue();
+    return this.props.password === other.getValue();
   }
 }

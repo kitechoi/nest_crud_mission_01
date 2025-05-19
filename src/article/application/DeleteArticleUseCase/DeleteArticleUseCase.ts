@@ -21,7 +21,7 @@ export class DeleteArticleUseCase implements UseCase<DeleteArticleUseCaseRequest
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    const passwordResult = Password.create(request.password);
+    const passwordResult = Password.create({ password: request.password });
     if (
       !passwordResult.isSuccess ||
       !article.password.equals(passwordResult.value)

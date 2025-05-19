@@ -22,18 +22,14 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
       throw new BadRequestException(articleIdResult.error);
     }
 
-    const passwordResult = Password.create(request.password);
+    const passwordResult = Password.create({ password: request.password});
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }
 
     const articleTempResult = Article.create({
-      title:
-        typeof request.title !== 'undefined' ? request.title : '임시제목입니다',
-      content:
-        typeof request.content !== 'undefined'
-          ? request.content
-          : '임시본문입니다',
+      title: typeof request.title !== 'undefined' ? request.title : '임시제목입니다',
+      content: typeof request.content !== 'undefined' ? request.content: '임시본문입니다',
       name: '임시이름입니다',
       password: passwordResult.value,
     });
