@@ -1,7 +1,6 @@
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { Article } from '../../domain/Article';
-import { ArticleId } from '../../domain/vo/ArticleId';
-import { Password } from '../../domain/vo/Password';
+import { Password } from '../../domain/Password';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { InternalServerErrorException } from '@nestjs/common';
 
@@ -19,14 +18,7 @@ export class ArticleRepositoryImplMapper {
   }
 
   static toDomain(entity: ArticleEntity): Article {
-    const idResult = ArticleId.create(entity.id);
-    if (!idResult.isSuccess) {
-      throw new InternalServerErrorException(
-        `ArticleId 생성 실패: ${idResult.error}`,
-      );
-    }
-
-    const pwResult = Password.create(entity.password);
+    const pwResult = Password.create({ password: entity.password });
     if (!pwResult.isSuccess) {
       throw new InternalServerErrorException(
         `Password 생성 실패: ${pwResult.error}`,
