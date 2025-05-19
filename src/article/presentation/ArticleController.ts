@@ -65,7 +65,7 @@ export class ArticleController {
         throw new InternalServerErrorException();
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 
@@ -99,7 +99,7 @@ export class ArticleController {
         result: result,
       };
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 
@@ -134,7 +134,7 @@ export class ArticleController {
         },
       };
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 }
