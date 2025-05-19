@@ -47,16 +47,10 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
     }
 
-    // 위에서 Password 일치 검사를 하면서 유효성 검사를 했는데, 아래 create에서 비밀번호 유효성 검사가 중복되고 있음
-
     const updatedArticle = Article.create(
       {
-        title:
-          typeof request.title !== 'undefined' ? request.title : article.title,
-        content:
-          typeof request.content !== 'undefined'
-            ? request.content
-            : article.content,
+        title: typeof request.title !== 'undefined' ? request.title : article.title,
+        content: typeof request.content !== 'undefined' ? request.content : article.content,
         name: article.name,
         password: article.password,
       },

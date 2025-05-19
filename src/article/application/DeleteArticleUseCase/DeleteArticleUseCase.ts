@@ -20,7 +20,6 @@ export class DeleteArticleUseCase implements UseCase<DeleteArticleUseCaseRequest
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }
-    
     const article = await this.articleRepository.findById(request.id);
     
     if (!article) {

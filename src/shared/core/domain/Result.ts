@@ -1,14 +1,18 @@
 export class Result<T> {
   public constructor(
-    public isSuccess: boolean, 
-    public error?: string, 
+    public isSuccess: boolean,
+    public error?: string,
     private _value?: T,
   ) {
     if (isSuccess && error) {
-      throw new Error('InvalidOperation: A result cannot be successful and contain an error');
+      throw new Error(
+        'InvalidOperation: A result cannot be successful and contain an error',
+      );
     }
     if (!isSuccess && !error) {
-      throw new Error('InvalidOperation: A failing result needs to contain an error message');
+      throw new Error(
+        'InvalidOperation: A failing result needs to contain an error message',
+      );
     }
     Object.freeze(this);
   }

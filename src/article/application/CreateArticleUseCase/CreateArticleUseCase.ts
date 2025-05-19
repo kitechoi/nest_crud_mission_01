@@ -3,11 +3,15 @@ import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
 import { Password } from '../../domain/vo/Password';
-import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository'
+import {
+  ArticleRepository,
+  ARTICLE_REPOSITORY,
+} from '../../infrastructure/ArticleRepository';
 import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
-export class CreateArticleUseCase implements UseCase<CreateArticleUseCaseRequest, CreateArticleUseCaseResponse>
+export class CreateArticleUseCase
+  implements UseCase<CreateArticleUseCaseRequest, CreateArticleUseCaseResponse>
 {
   constructor(
     @Inject(ARTICLE_REPOSITORY)

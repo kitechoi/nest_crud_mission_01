@@ -19,7 +19,6 @@ export class ArticleControllerDeleteArticleRequestBody {
   password: string;
 }
 
-
 export class ArticleControllerUpdateArticleRequestBody {
   @Title()
   title?: string;

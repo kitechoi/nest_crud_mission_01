@@ -1,4 +1,4 @@
-import { Article } from '../domain/Article'
+import { Article } from '../domain/Article';
 
 export const ARTICLE_REPOSITORY = Symbol('ARTICLE_REPOSITORY');
 
