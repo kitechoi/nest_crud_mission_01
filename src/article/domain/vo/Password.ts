@@ -1,8 +1,7 @@
-import { Result } from '../../../shared/core/Result';
+import { Result } from '../../../shared/core/domain/Result';
 
 export class Password {
-  private constructor(private readonly value: string) {
-  }
+  private constructor(private readonly value: string) {}
 
   static create(value: string): Result<Password> {
     if (!/^[a-zA-Z0-9]{4,10}$/.test(value)) {

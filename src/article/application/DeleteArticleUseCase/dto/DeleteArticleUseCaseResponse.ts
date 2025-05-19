@@ -1,4 +1,3 @@
-import { CoreResponse } from "src/shared/core/CoreResponse";
+import { CoreResponse } from 'src/shared/core/application/CoreResponse';
 
-export interface DeleteArticleUseCaseResponse extends CoreResponse {
-}
+export interface DeleteArticleUseCaseResponse extends CoreResponse {}
