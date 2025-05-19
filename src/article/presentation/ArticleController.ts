@@ -113,7 +113,6 @@ export class ArticleController {
     ok: true;
     result: ArticleControllerUpdateArticleResponse;
   }> {
-    console.log(typeof params.id);
     try {
       const { ok, article } = await this.updateArticleUseCase.execute({
         id: Number(params.id),
