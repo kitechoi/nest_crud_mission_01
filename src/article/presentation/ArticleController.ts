@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
@@ -8,6 +8,7 @@ import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleR
 
 @Controller('articles')
 export class ArticleController {
+  private readonly logger = new Logger(ArticleController.name);
   constructor(
     private readonly createArticleUseCase: CreateArticleUseCase,
     private readonly deleteArticleUseCase: DeleteArticleUseCase,
@@ -46,6 +47,7 @@ export class ArticleController {
         },
       };
     } catch (error) {
+      this.logger.error(JSON.stringify(error));
       throw error;
     }
   }
@@ -55,7 +57,7 @@ export class ArticleController {
   async deleteArticle(
     @Param() params: ArticleControllerDeleteArticleRequestParam,
     @Body() body: ArticleControllerDeleteArticleRequestBody,
-  ): Promise<void> {
+  ) {
     try {
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
@@ -64,7 +66,9 @@ export class ArticleController {
       if (!ok) {
         throw new InternalServerErrorException();
       }
+      return;
     } catch (error) {
+      this.logger.error(JSON.stringify(error));
       throw error;
     }
   }
@@ -99,6 +103,7 @@ export class ArticleController {
         result: result,
       };
     } catch (error) {
+      this.logger.error(JSON.stringify(error));
       throw error;
     }
   }
@@ -134,6 +139,7 @@ export class ArticleController {
         },
       };
     } catch (error) {
+      this.logger.error(JSON.stringify(error));
       throw error;
     }
   }
