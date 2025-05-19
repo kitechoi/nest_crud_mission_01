@@ -5,6 +5,7 @@ import { ArticleEntity } from '../entity/ArticleEntity';
 import { InternalServerErrorException } from '@nestjs/common';
 
 export class ArticleRepositoryImplMapper {
+  
   static toEntity(article: Article): ArticleEntity {
     const entity = new ArticleEntity();
     if (article.id) {
