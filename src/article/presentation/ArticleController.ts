@@ -35,12 +35,13 @@ export class ArticleController {
       if (!ok) {
         throw new InternalServerErrorException();
       }
-
+      
       return {
+
         statusCode: HttpStatus.CREATED,
         ok: true,
         result: {
-          id: article.id!.getValue(),
+          id: article.id.toNumber(),
           title: article.title,
           content: article.content,
           name: article.name,
@@ -92,7 +93,7 @@ export class ArticleController {
       }
 
       const result = articles.map((article) => ({
-        id: article.id!.getValue(),
+        id: article.id!.toNumber(),
         title: article.title,
         content: article.content,
       }));
@@ -133,7 +134,7 @@ export class ArticleController {
         statusCode: HttpStatus.OK,
         ok: true,
         result: {
-          id: article.id!.getValue(),
+          id: article.id!.toNumber(),
           title: article.title,
           content: article.content,
         },
