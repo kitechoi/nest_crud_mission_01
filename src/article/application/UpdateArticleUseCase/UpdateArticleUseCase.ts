@@ -45,6 +45,7 @@ export class UpdateArticleUseCase {
     const savedArticle = await this.articleRepository.save(updatedArticle.value);
 
     return {
+      ok: true,
       article: savedArticle
     };
   }

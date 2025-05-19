@@ -10,14 +10,15 @@ export class FindAllArticleUseCase {
     private readonly articleRepository: ArticleRepository,
   ) { }
 
-  async execute(request: FindAllArticleUseCaseRequest): Promise<FindAllArticleUseCaseResponse[]> {
+  async execute(request: FindAllArticleUseCaseRequest): Promise<FindAllArticleUseCaseResponse> {
     const { page, limit } = request;
     const offset = (page - 1) * limit;
 
     const articles = await this.articleRepository.findAll(limit, offset);
 
-    return articles.map((article) => ({
-      article: article
-    }));
+    return { 
+      ok: true, 
+      articles: articles 
+    };
   }
-}
+} 
