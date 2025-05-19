@@ -1,5 +1,3 @@
-import { IsInt, IsOptional } from 'class-validator';
-import { Type } from 'class-transformer';
 import { Title, Content, Name, Password } from './validators/ValidatedFields';
 
 export class ArticleControllerCreateArticleRequestBody {
@@ -21,13 +19,11 @@ export class ArticleControllerDeleteArticleRequestBody {
   password: string;
 }
 
-export class ArticleControllerUpdateArticleRequestBody {
 
-  @IsOptional()
+export class ArticleControllerUpdateArticleRequestBody {
   @Title()
   title?: string;
 
-  @IsOptional()
   @Content()
   content?: string;
 
@@ -36,23 +32,14 @@ export class ArticleControllerUpdateArticleRequestBody {
 }
 
 export class ArticleControllerDeleteArticleRequestParam {
-  @Type(() => Number)
-  @IsInt()
-  id: number;
+  id: string;
 }
 
 export class ArticleControllerUpdateArticleRequestParam {
-  @Type(() => Number)
-  @IsInt()
-  id: number;
+  id: string;
 }
 
 export class ArticleControllerFindAllArticleRequestQuery {
-  @Type(() => Number)
-  @IsInt()
-  page: number;
-
-  @Type(() => Number)
-  @IsInt()
-  limit: number;
+  page: string;
+  limit: string;
 }
