@@ -65,7 +65,7 @@ export class ArticleController {
         throw new InternalServerErrorException();
       }
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 
@@ -99,7 +99,7 @@ export class ArticleController {
         result: result,
       };
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 
@@ -113,7 +113,6 @@ export class ArticleController {
     ok: true;
     result: ArticleControllerUpdateArticleResponse;
   }> {
-    console.log(typeof params.id);
     try {
       const { ok, article } = await this.updateArticleUseCase.execute({
         id: Number(params.id),
@@ -135,7 +134,7 @@ export class ArticleController {
         },
       };
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 }

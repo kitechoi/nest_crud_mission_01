@@ -18,10 +18,12 @@ export class DeleteArticleUseCase {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    const pwResult = Password.create(request.password);
-    if (!pwResult.isSuccess || !article.password.equals(pwResult.value)) {
-      throw new ForbiddenException('비밀번호가 일치하지 않거나 형식이 잘못되었습니다.');
-  }
+    const passwordResult = Password.create(request.password);
+    if (!passwordResult.isSuccess || !article.password.equals(passwordResult.value)) {
+      throw new ForbiddenException(
+        '비밀번호가 일치하지 않거나 형식이 잘못되었습니다.',
+      );
+    }
     await this.articleRepository.delete(request.id);
     return { ok: true };
   }
