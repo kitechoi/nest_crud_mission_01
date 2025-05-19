@@ -1,5 +1,5 @@
 import { ValueObject } from 'src/shared/core/domain/ValueObject';
-import { Result } from '../../../shared/core/domain/Result';
+import { Result } from '../../shared/core/domain/Result';
 
 interface PasswordProps {
   password: string;

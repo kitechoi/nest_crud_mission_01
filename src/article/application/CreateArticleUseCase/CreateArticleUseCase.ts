@@ -2,7 +2,7 @@ import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
-import { Password } from '../../domain/vo/Password';
+import { Password } from '../../domain/Password';
 import {
   ArticleRepository,
   ARTICLE_REPOSITORY,
@@ -19,7 +19,8 @@ export class CreateArticleUseCase
   ) {}
 
   async execute(
-    request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
+    request: CreateArticleUseCaseRequest,
+  ): Promise<CreateArticleUseCaseResponse> {
     const passwordResult = Password.create({ password: request.password });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);

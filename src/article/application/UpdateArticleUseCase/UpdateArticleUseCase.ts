@@ -1,14 +1,23 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
-import { Password } from '../../domain/vo/Password';
-import { ArticleId } from '../../domain/vo/ArticleId';
-import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository';
+import { Password } from '../../domain/Password';
+import {
+  ArticleRepository,
+  ARTICLE_REPOSITORY,
+} from '../../infrastructure/ArticleRepository';
 import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
-export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest, UpdateArticleUseCaseResponse>
+export class UpdateArticleUseCase
+  implements UseCase<UpdateArticleUseCaseRequest, UpdateArticleUseCaseResponse>
 {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
@@ -16,20 +25,20 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
   ) {}
 
   async execute(
-    request: UpdateArticleUseCaseRequest): Promise<UpdateArticleUseCaseResponse> {
-    const articleIdResult = ArticleId.create(request.id);
-    if (!articleIdResult.isSuccess) {
-      throw new BadRequestException(articleIdResult.error);
-    }
-
-    const passwordResult = Password.create({ password: request.password});
+    request: UpdateArticleUseCaseRequest,
+  ): Promise<UpdateArticleUseCaseResponse> {
+    const passwordResult = Password.create({ password: request.password });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }
 
     const articleTempResult = Article.create({
-      title: typeof request.title !== 'undefined' ? request.title : '임시제목입니다',
-      content: typeof request.content !== 'undefined' ? request.content: '임시본문입니다',
+      title:
+        typeof request.title !== 'undefined' ? request.title : '임시제목입니다',
+      content:
+        typeof request.content !== 'undefined'
+          ? request.content
+          : '임시본문입니다',
       name: '임시이름입니다',
       password: passwordResult.value,
     });
@@ -49,8 +58,12 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
 
     const updatedArticle = Article.create(
       {
-        title: typeof request.title !== 'undefined' ? request.title : article.title,
-        content: typeof request.content !== 'undefined' ? request.content : article.content,
+        title:
+          typeof request.title !== 'undefined' ? request.title : article.title,
+        content:
+          typeof request.content !== 'undefined'
+            ? request.content
+            : article.content,
         name: article.name,
         password: article.password,
       },

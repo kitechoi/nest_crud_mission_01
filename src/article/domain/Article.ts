@@ -1,5 +1,4 @@
-import { ArticleId } from './vo/ArticleId';
-import { Password } from './vo/Password';
+import { Password } from './Password';
 import { Result } from '../../shared/core/domain/Result';
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
