@@ -2,6 +2,7 @@ import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nest
 import { DeleteArticleUseCaseRequest } from './dto/DeleteArticleUseCaseRequest';
 import { Password } from '../../domain/vo/Password';
 import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository'
+import { DeleteArticleUseCaseResponse } from './dto/DeleteArticleUseCaseResponse';
 
 @Injectable()
 export class DeleteArticleUseCase {
@@ -10,7 +11,7 @@ export class DeleteArticleUseCase {
     private readonly articleRepository: ArticleRepository,
   ) { }
 
-  async execute(request: DeleteArticleUseCaseRequest): Promise<void> {
+  async execute(request: DeleteArticleUseCaseRequest): Promise<DeleteArticleUseCaseResponse> {
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
@@ -20,8 +21,8 @@ export class DeleteArticleUseCase {
     const pwResult = Password.create(request.password);
     if (!pwResult.isSuccess || !article.password.equals(pwResult.value)) {
       throw new ForbiddenException('비밀번호가 일치하지 않거나 형식이 잘못되었습니다.');
-    }
-
+  }
     await this.articleRepository.delete(request.id);
+    return { ok: true };
   }
 }

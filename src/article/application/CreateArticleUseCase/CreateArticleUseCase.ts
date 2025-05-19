@@ -31,6 +31,7 @@ export class CreateArticleUseCase {
 
     const savedArticle = await this.articleRepository.save(articleResult.value);
     return {
+      ok: true,
       article: savedArticle};
   }
 }

@@ -1,5 +1,6 @@
 import { Article } from "src/article/domain/Article";
+import { CoreResponse } from "src/shared/core/CoreResponse";
 
-export interface FindAllArticleUseCaseResponse {
-  article: Article
+export interface FindAllArticleUseCaseResponse extends CoreResponse {
+  articles: Article[]
 }
