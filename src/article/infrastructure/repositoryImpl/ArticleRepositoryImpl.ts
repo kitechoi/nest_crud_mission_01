@@ -21,20 +21,24 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   }
 
   async findAll(limit: number, offset: number): Promise<Article[]> {
-    const entities = await this.articleEntityRepository.find({
-      order: { created_at: 'DESC' },
-      take: limit,
-      skip: offset,
-    });
+    const entities = await this.articleEntityRepository
+      .createQueryBuilder('article')
+      .orderBy('article.created_at', 'DESC')
+      .take(limit)
+      .skip(offset)
+      .getMany();
+
     return entities.map((entity) =>
       ArticleRepositoryImplMapper.toDomain(entity),
     );
   }
 
   async findById(id: number): Promise<Article | null> {
-    const entity = await this.articleEntityRepository.findOne({
-      where: { id },
-    });
+    const entity = await this.articleEntityRepository
+      .createQueryBuilder('article')
+      .where('article.id = :id', { id })
+      .getOne();
+      
     return entity ? ArticleRepositoryImplMapper.toDomain(entity) : null;
   }
 
