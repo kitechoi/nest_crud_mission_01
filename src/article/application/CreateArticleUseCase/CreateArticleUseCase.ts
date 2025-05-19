@@ -3,10 +3,7 @@ import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
 import { Password } from '../../domain/Password';
-import {
-  ArticleRepository,
-  ARTICLE_REPOSITORY,
-} from '../../infrastructure/ArticleRepository';
+import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository'
 import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
@@ -19,8 +16,7 @@ export class CreateArticleUseCase
   ) {}
 
   async execute(
-    request: CreateArticleUseCaseRequest,
-  ): Promise<CreateArticleUseCaseResponse> {
+    request: CreateArticleUseCaseRequest): Promise<CreateArticleUseCaseResponse> {
     const passwordResult = Password.create({ password: request.password });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
