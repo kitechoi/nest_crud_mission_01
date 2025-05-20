@@ -22,16 +22,6 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
       throw new BadRequestException(passwordResult.error);
     }
 
-    const articleTempResult = Article.create({
-      title: typeof request.title !== 'undefined' ? request.title : '임시제목입니다',
-      content: typeof request.content !== 'undefined' ? request.content: '임시본문입니다',
-      name: '임시이름입니다',
-      password: passwordResult.value,
-    });
-    if (!articleTempResult.isSuccess) {
-      throw new BadRequestException(articleTempResult.error);
-    }
-
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
