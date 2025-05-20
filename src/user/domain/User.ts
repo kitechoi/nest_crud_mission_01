@@ -17,7 +17,7 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   static create(props: UserProps, id?: UniqueEntityID): Result<User> {
-    // 검증로직
+    // 검증로직 제약
 
     
     return Result.ok(new User(props, id));
