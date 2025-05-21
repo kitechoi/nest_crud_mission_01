@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { USER_REPOSITORY, UserRepository } from '../infrastructure/UserRepository';
-import { User } from '../domain/User';
 import { FindUserUseCaseResponse } from './dto/FindUserUseCaseResponse';
 import { FindUserUseCaseRequest } from './dto/UserUseCaseRequest';
 import { UseCase } from 'src/shared/core/application/UseCase';

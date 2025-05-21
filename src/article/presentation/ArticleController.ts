@@ -1,10 +1,11 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger, UseGuards, Req, NotFoundException } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
 import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
 import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
+import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
 
 @Controller('articles')
 export class ArticleController {
@@ -52,16 +53,18 @@ export class ArticleController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteArticle(
     @Param() params: ArticleControllerDeleteArticleRequestParam,
-    @Body() body: ArticleControllerDeleteArticleRequestBody,
+    @Req() request: Request,
   ) {
     try {
+      const { name } = (request as any).user;
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
-        password: body.password,
+        name: name,
       });
       if (!ok) {
         throw new InternalServerErrorException();

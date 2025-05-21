@@ -26,20 +26,18 @@ export class DeleteArticleUseCase
   async execute(
     request: DeleteArticleUseCaseRequest,
   ): Promise<DeleteArticleUseCaseResponse> {
-    const passwordResult = Password.create({ password: request.password });
-    if (!passwordResult.isSuccess) {
-      throw new BadRequestException(passwordResult.error);
-    }
-
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (!article.password.equals(passwordResult.value)) {
-      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
+    // User 테이블과 연동하여 userId 기반으로 변경 필요
+    if (article.name !== request.name) {
+      throw new ForbiddenException('작성자만 삭제할 수 있습니다.');
     }
+  
+
 
     await this.articleRepository.delete(request.id);
     return { ok: true };

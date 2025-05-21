@@ -5,7 +5,7 @@ import { AuthUseCase } from './application/AuthUseCase';
 import { User } from 'src/user/domain/User';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   constructor(private authUseCase: AuthUseCase) {
     super({
       usernameField: 'userId',
