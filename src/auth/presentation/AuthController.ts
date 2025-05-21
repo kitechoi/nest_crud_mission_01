@@ -1,8 +1,9 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Get, Req, Logger } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Get, Logger, Req, NotFoundException } from '@nestjs/common';
 import { AuthUseCase } from '../application/AuthUseCase';
-import { AuthGuard } from '../AuthGuard';
-import { AuthControllerRequestBody } from './AuthRequest';
-
+import { LocalAuthGuard } from '../LocalAuthGuard';
+import { JwtAuthGuard } from '../JwtAuthGuard';
+import { User } from 'src/user/domain/User';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -10,23 +11,26 @@ export class AuthController {
   constructor(private authUseCase: AuthUseCase) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('login')
-  async signIn(@Body() body: AuthControllerRequestBody) {
-
+  @UseGuards(LocalAuthGuard)
+  @Post('signin')
+  async signIn(@Req() req: Request) {
     try {
-      const result = this.authUseCase.signIn({
-        userId: body.userId,
-        userPassword: body.userPassword,
-      });
-
-      return result;
+      if (!req.user) {
+        throw new NotFoundException();
+      }
+      if (!(req.user instanceof User)) {
+        throw new NotFoundException();
+      }
+      const accessToken = this.authUseCase.login(req.user);
+      return accessToken;
+      
     } catch (error) {
       this.logger.error(JSON.stringify(error));
       throw error;
     }
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Req() req: any) {
     return req.user;

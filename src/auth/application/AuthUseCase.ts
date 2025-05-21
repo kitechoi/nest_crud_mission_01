@@ -1,8 +1,9 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserUseCase } from 'src/user/application/UserUseCase';
-import { JwtService } from '@nestjs/jwt';
 import { AuthUseCaseRequest } from './dto/AuthUseCaseRequest';
 import { Password } from 'src/article/domain/Password';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/domain/User';
 
 @Injectable()
 export class AuthUseCase {
@@ -11,23 +12,28 @@ export class AuthUseCase {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(request: AuthUseCaseRequest): Promise<{ access_token: string }> {
-
+  // LocalStrategy에서 자체적으로 호출됨
+  async validateUser(request: AuthUseCaseRequest): Promise<User | null> {
     const passwordResult = Password.create({ password: request.userPassword });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }
-    
-    const user = await this.userUseCase.execute({userId: request.userId});
 
-    
-    if (!(user.user.userPassword).equals(passwordResult.value)) {
-      throw new UnauthorizedException("비번 틀림");
+    const user = await this.userUseCase.execute({ userId: request.userId });
+
+    if (user && user.user.userPassword.equals(passwordResult.value)) {
+      const { userPassword, ...result } = user.user;
+      return user.user;
     }
+    return null;
+  }
 
-    const payload = { sub: user.user.userId, name: user.user.name };
+
+  // Controller signin 과정 중 호출됨
+  async login(user: User) {
+    const payload = { name: user.name, sub: user.userId };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
     };
   }
 }
