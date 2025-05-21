@@ -1,13 +1,23 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
-import { Password } from '../../domain/Password';
-import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository';
+import { Password } from '../../../user/domain/Password';
+import {
+  ArticleRepository,
+  ARTICLE_REPOSITORY,
+} from '../../infrastructure/ArticleRepository';
 import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
-export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest, UpdateArticleUseCaseResponse>
+export class UpdateArticleUseCase
+  implements UseCase<UpdateArticleUseCaseRequest, UpdateArticleUseCaseResponse>
 {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
@@ -15,9 +25,9 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
   ) {}
 
   async execute(
-    request: UpdateArticleUseCaseRequest): Promise<UpdateArticleUseCaseResponse> {
-
-    const passwordResult = Password.create({ password: request.password});
+    request: UpdateArticleUseCaseRequest,
+  ): Promise<UpdateArticleUseCaseResponse> {
+    const passwordResult = Password.create({ password: request.password });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }
@@ -34,8 +44,12 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
 
     const updatedArticle = Article.create(
       {
-        title: typeof request.title !== 'undefined' ? request.title : article.title,
-        content: typeof request.content !== 'undefined' ? request.content : article.content,
+        title:
+          typeof request.title !== 'undefined' ? request.title : article.title,
+        content:
+          typeof request.content !== 'undefined'
+            ? request.content
+            : article.content,
         name: article.name,
         password: article.password,
       },

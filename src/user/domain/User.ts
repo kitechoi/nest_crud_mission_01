@@ -1,7 +1,7 @@
-import { Password } from "src/article/domain/Password";
-import { AggregateRoot } from "src/shared/core/domain/AggregateRoot";
-import { Result } from "src/shared/core/domain/Result";
-import { UniqueEntityID } from "src/shared/core/domain/UniqueEntityID";
+import { Password } from 'src/user/domain/Password';
+import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
+import { Result } from 'src/shared/core/domain/Result';
+import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 
 export interface UserProps {
   userId: string;
@@ -19,7 +19,6 @@ export class User extends AggregateRoot<UserProps> {
   static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     // 검증로직 제약
 
-    
     return Result.ok(new User(props, id));
   }
 
@@ -38,5 +37,4 @@ export class User extends AggregateRoot<UserProps> {
   get name(): string {
     return this.props.name;
   }
- }
-
+}

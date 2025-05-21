@@ -21,7 +21,7 @@ export class AuthController {
       if (!(req.user instanceof User)) {
         throw new NotFoundException();
       }
-      const accessToken = this.authUseCase.login(req.user);
+      const accessToken = this.authUseCase.generateAccessToken(req.user);
       return accessToken;
       
     } catch (error) {

@@ -1,4 +1,4 @@
-import { Password } from './Password';
+import { Password } from '../../user/domain/Password';
 import { Result } from '../../shared/core/domain/Result';
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';

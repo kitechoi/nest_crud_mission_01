@@ -1,6 +1,6 @@
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { Article } from '../../domain/Article';
-import { Password } from '../../domain/Password';
+import { Password } from '../../../user/domain/Password';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { InternalServerErrorException } from '@nestjs/common';
 
