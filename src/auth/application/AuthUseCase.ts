@@ -30,7 +30,7 @@ export class AuthUseCase {
 
 
   // Controller signin 과정 중 호출됨
-  async login(user: User) {
+  async login(user: User): Promise<{accessToken: string}> {
     const payload = { name: user.name, sub: user.userId };
     return {
       accessToken: await this.jwtService.signAsync(payload),
