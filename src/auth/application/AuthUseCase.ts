@@ -1,5 +1,9 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserUseCase } from 'src/user/application/UserUseCase';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { UserUseCase } from 'src/user/application/FindUserUseCase';
 import { AuthUseCaseRequest } from './dto/AuthUseCaseRequest';
 import { Password } from 'src/article/domain/Password';
 import { JwtService } from '@nestjs/jwt';
@@ -28,9 +32,8 @@ export class AuthUseCase {
     return null;
   }
 
-
   // Controller signin 과정 중 호출됨
-  async login(user: User): Promise<{accessToken: string}> {
+  async login(user: User): Promise<{ accessToken: string }> {
     const payload = { name: user.name, sub: user.userId };
     return {
       accessToken: await this.jwtService.signAsync(payload),

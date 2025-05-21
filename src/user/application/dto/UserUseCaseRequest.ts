@@ -1,3 +1,3 @@
-export interface UserUseCaseRequest {
+export interface FindUserUseCaseRequest {
   userId: string;
 }

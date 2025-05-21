@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserUseCase } from './application/UserUseCase';
+import { UserUseCase } from './application/FindUserUseCase';
 import { UserRepositoryImplMapper } from './infrastructure/mapper/UserRepositoryImplMapper';
 import { USER_REPOSITORY } from './infrastructure/UserRepository';
 import { UserRepositoryImpl } from './infrastructure/repositoryImpl/UserRepositoryImpl';
@@ -14,10 +14,8 @@ import { UserEntitiy } from './infrastructure/entity/UserEntity';
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,
-    }
+    },
   ],
   exports: [UserUseCase],
-  
 })
-
 export class UserModule {}
