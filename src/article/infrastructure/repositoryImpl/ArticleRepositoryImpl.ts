@@ -13,9 +13,9 @@ export class ArticleRepositoryImpl implements ArticleRepository {
     private readonly articleEntityRepository: Repository<ArticleEntity>,
   ) {}
 
-  async save(article: Article): Promise<Article> {
+  async save(article: Article, userIdFromDB: number): Promise<Article> {
     const entity = await this.articleEntityRepository.save(
-      ArticleRepositoryImplMapper.toEntity(article),
+      ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
     );
     return ArticleRepositoryImplMapper.toDomain(entity);
   }

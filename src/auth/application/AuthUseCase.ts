@@ -8,6 +8,7 @@ import { AuthUseCaseRequest } from './dto/AuthUseCaseRequest';
 import { Password } from 'src/user/domain/Password';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/domain/User';
+import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 
 @Injectable()
 export class AuthUseCase {
@@ -34,7 +35,10 @@ export class AuthUseCase {
 
   // Controller signin 과정 중 호출됨
   async generateAccessToken(user: User): Promise<{ accessToken: string }> {
-    const payload = { name: user.name, sub: user.userId };
+    const payload = { 
+      id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id, 
+      name: user.name, 
+      sub: user.userId };
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };

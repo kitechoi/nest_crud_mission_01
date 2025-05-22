@@ -21,23 +21,20 @@ export class CreateArticleUseCase
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
-    const passwordResult = Password.create({ password: request.password });
-    if (!passwordResult.isSuccess) {
-      throw new BadRequestException(passwordResult.error);
-    }
 
     const articleResult = Article.createNew({
       title: request.title,
       content: request.content,
-      name: request.name,
-      password: passwordResult.value,
+      authorId: request.userId,
     });
 
     if (!articleResult.isSuccess) {
       throw new BadRequestException(articleResult.error);
     }
-
-    const savedArticle = await this.articleRepository.save(articleResult.value);
+    console.log(articleResult.value);
+    
+    const savedArticle = await this.articleRepository.save(
+      articleResult.value, request.userIdFromDB);
     return {
       ok: true,
       article: savedArticle,

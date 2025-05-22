@@ -14,7 +14,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    // req.user 에 들어갈 값 반환
-    return { userId: payload.sub, name: payload.name };
+    // req.user 에 들어갈 값
+    console.log('payload:', payload);
+    console.log('userIdFromDB:', Number(payload.id));
+    return {
+      userIdFromDB: Number(payload.id),
+      userId: payload.sub,
+      name: payload.name,
+    };
   }
 }

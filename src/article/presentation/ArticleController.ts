@@ -17,9 +17,11 @@ export class ArticleController {
     private readonly updateArticleUseCase: UpdateArticleUseCase,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createArticle(
+    @Req() request: Request,
     @Body() body: ArticleControllerCreateArticleRequestBody,
   ): Promise<{
     statusCode: number;
@@ -27,16 +29,18 @@ export class ArticleController {
     result: ArticleControllerCreateArticleResponse;
   }> {
     try {
+      const { userId, userIdFromDB } = (request as any).user;
+      console.log(userId, userIdFromDB, ";;;;");
       const { ok, article } = await this.createArticleUseCase.execute({
+        userId: userId,
         title: body.title,
         content: body.content,
-        name: body.name,
-        password: body.password,
+        userIdFromDB: userIdFromDB,
       });
       if (!ok) {
         throw new InternalServerErrorException();
       }
-      
+      console.log(article);
       return {
         statusCode: HttpStatus.CREATED,
         ok: true,
@@ -44,7 +48,7 @@ export class ArticleController {
           id: article.id.toNumber(),
           title: article.title,
           content: article.content,
-          name: article.name,
+          authorId: userId,
         },
       };
     } catch (error) {
@@ -61,15 +65,15 @@ export class ArticleController {
     @Req() request: Request,
   ) {
     try {
-      const { name } = (request as any).user;
+      const { userId } = (request as any).user;
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
-        name: name,
+        userId: userId,
       });
       if (!ok) {
         throw new InternalServerErrorException();
       }
-      
+
       return;
     } catch (error) {
       this.logger.error(JSON.stringify(error));
@@ -116,6 +120,7 @@ export class ArticleController {
   @HttpCode(HttpStatus.OK)
   async updateArticle(
     @Param() params: ArticleControllerUpdateArticleRequestParam,
+    @Req() request: Request,
     @Body() body: ArticleControllerUpdateArticleRequestBody,
   ): Promise<{
     statusCode: number;
@@ -123,11 +128,13 @@ export class ArticleController {
     result: ArticleControllerUpdateArticleResponse;
   }> {
     try {
+      const { userId, userIdFromDB } = (request as any).user;
       const { ok, article } = await this.updateArticleUseCase.execute({
         id: Number(params.id),
         title: body.title,
         content: body.content,
-        password: body.password,
+        userId: userId,
+        userIdFromDB: userIdFromDB,
       });
       if (!ok) {
         throw new InternalServerErrorException();

@@ -27,10 +27,6 @@ export class UpdateArticleUseCase
   async execute(
     request: UpdateArticleUseCaseRequest,
   ): Promise<UpdateArticleUseCaseResponse> {
-    const passwordResult = Password.create({ password: request.password });
-    if (!passwordResult.isSuccess) {
-      throw new BadRequestException(passwordResult.error);
-    }
 
     const article = await this.articleRepository.findById(request.id);
 
@@ -38,8 +34,8 @@ export class UpdateArticleUseCase
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (!article.password.equals(passwordResult.value)) {
-      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
+    if (article.authorId !== request.userId) {
+      throw new ForbiddenException('작성자만 수정할 수 있습니다.');
     }
 
     const updatedArticle = Article.create(
@@ -50,8 +46,7 @@ export class UpdateArticleUseCase
           typeof request.content !== 'undefined'
             ? request.content
             : article.content,
-        name: article.name,
-        password: article.password,
+        authorId: article.authorId,
       },
       article.id,
     );
@@ -62,6 +57,7 @@ export class UpdateArticleUseCase
 
     const savedArticle = await this.articleRepository.save(
       updatedArticle.value,
+      request.userIdFromDB,
     );
 
     return {

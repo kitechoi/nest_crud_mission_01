@@ -32,12 +32,10 @@ export class DeleteArticleUseCase
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    // User 테이블과 연동하여 userId 기반으로 변경 필요
-    if (article.name !== request.name) {
+    // User 테이블과 연동하여 userId 기반으로 변경 필요 => ing
+    if (article.authorId !== request.userId) {
       throw new ForbiddenException('작성자만 삭제할 수 있습니다.');
     }
-  
-
 
     await this.articleRepository.delete(request.id);
     return { ok: true };
