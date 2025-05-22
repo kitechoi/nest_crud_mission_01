@@ -31,12 +31,11 @@ export class ArticleController {
   }> {
     try {
       if (!request.user) {
-        throw new UnauthorizedException('로그인이 필요합니다.');
+        throw new UnauthorizedException();
       }
-      const userId = request.user.userId;
-      const userIdFromDB = request.user.userIdFromDB;
-      // declare 인터페이스
-      console.log(userId, userIdFromDB, ";;;;");
+      const { userId, userIdFromDB } = request.user;
+
+      console.log(userId, userIdFromDB, ';;;;');
       const { ok, article } = await this.createArticleUseCase.execute({
         userId: userId,
         title: body.title,
