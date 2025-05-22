@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger, UseGuards, Req, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger, UseGuards, Req, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
@@ -6,6 +6,7 @@ import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/Update
 import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
 import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
 import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
+import { Request } from 'express';
 
 @Controller('articles')
 export class ArticleController {
@@ -29,7 +30,12 @@ export class ArticleController {
     result: ArticleControllerCreateArticleResponse;
   }> {
     try {
-      const { userId, userIdFromDB } = (request as any).user;
+      if (!request.user) {
+        throw new UnauthorizedException('로그인이 필요합니다.');
+      }
+      const userId = request.user.userId;
+      const userIdFromDB = request.user.userIdFromDB;
+      // declare 인터페이스
       console.log(userId, userIdFromDB, ";;;;");
       const { ok, article } = await this.createArticleUseCase.execute({
         userId: userId,

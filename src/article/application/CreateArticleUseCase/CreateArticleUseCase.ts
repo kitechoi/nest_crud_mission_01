@@ -32,9 +32,10 @@ export class CreateArticleUseCase
       throw new BadRequestException(articleResult.error);
     }
     console.log(articleResult.value);
-    
+
     const savedArticle = await this.articleRepository.save(
       articleResult.value, request.userIdFromDB);
+
     return {
       ok: true,
       article: savedArticle,

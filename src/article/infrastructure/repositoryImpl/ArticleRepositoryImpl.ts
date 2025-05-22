@@ -5,6 +5,7 @@ import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { ArticleRepository } from '../ArticleRepository';
 import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapper';
+import { UserEntitiy } from 'src/user/infrastructure/entity/UserEntity';
 
 @Injectable()
 export class ArticleRepositoryImpl implements ArticleRepository {

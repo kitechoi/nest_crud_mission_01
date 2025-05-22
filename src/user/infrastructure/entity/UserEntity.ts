@@ -1,4 +1,5 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn,  } from 'typeorm';
+import { ArticleEntity } from 'src/article/infrastructure/entity/ArticleEntity';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn,  } from 'typeorm';
 
 @Entity('users')
 export class UserEntitiy extends BaseEntity {
@@ -14,6 +15,10 @@ export class UserEntitiy extends BaseEntity {
 
   @Column()
   name: string;
+
+  @OneToMany(() => ArticleEntity, (entity) => entity.user)
+  @JoinColumn({ referencedColumnName: 'user_id' })
+  article: ArticleEntity[];
 
   @CreateDateColumn()
   create_at: Date;

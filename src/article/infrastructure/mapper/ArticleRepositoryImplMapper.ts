@@ -16,8 +16,9 @@ export class ArticleRepositoryImplMapper {
     
     entity.title = article.title;
     entity.content = article.content;
+
+    const user = new UserEntitiy(); // userrepo를 조회해야 할 것 같은데.
     
-    const user = new UserEntitiy();
     user.id = Number(userIdFromDB);
     entity.user = user;
 
@@ -31,7 +32,7 @@ export class ArticleRepositoryImplMapper {
       {
         title: entity.title,
         content: entity.content,
-        authorId: entity.user.user_id,
+        authorId: "",
       },
       UniqueEntityID.create(entity.id),
     );
