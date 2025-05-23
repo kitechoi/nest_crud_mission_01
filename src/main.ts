@@ -4,6 +4,7 @@ import {
 } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from './data-source';
+import * as cookieParser from 'cookie-parser';
 
 initializeTransactionalContext();
 
@@ -15,9 +16,11 @@ async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
 
   await AppDataSource.initialize();
-  addTransactionalDataSource(AppDataSource); 
+  addTransactionalDataSource(AppDataSource);
 
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   await app.listen(process.env.PORT ?? 80);
 }
 bootstrap();
+

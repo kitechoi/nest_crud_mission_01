@@ -9,6 +9,9 @@ import { Password } from 'src/user/domain/Password';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/domain/User';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import { jwtConstants } from '../constants';
+import { Response as ExpressResponse } from 'express';
+
 
 @Injectable()
 export class AuthUseCase {
@@ -43,5 +46,38 @@ export class AuthUseCase {
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };
+  }
+
+  setRefreshToken(user: User, res: ExpressResponse) {
+    const refreshToken = this.jwtService.sign(
+      {
+        id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
+        sub: user.username,
+      },
+      {
+        secret: jwtConstants.refreshSecret, // access와 분리된 refresh secret
+        expiresIn: '14d',
+      },
+    );
+
+    res.setHeader('Set-Cookie', [
+      `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=1209600`,
+    ]);
+  }
+
+  async reissueAccessTokenByRefreshToken(
+    refreshToken: string,
+  ): Promise<{ accessToken: string }> {
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: jwtConstants.refreshSecret,
+      });
+
+      const user = await this.userUseCase.execute({ username: payload.sub });
+
+      return this.generateAccessToken(user.user);
+    } catch {
+      throw new UnauthorizedException('리프레시 토큰 오류');
+    }
   }
 }
