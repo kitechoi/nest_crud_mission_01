@@ -2,7 +2,7 @@ export class ArticleControllerCreateArticleResponse {
   id: number;
   title: string;
   content: string;
-  authorId: string;
+  username: string;
 }
 
 export class ArticleControllerUpdateArticleResponse {

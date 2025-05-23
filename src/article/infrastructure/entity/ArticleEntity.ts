@@ -14,11 +14,8 @@ export class ArticleEntity extends BaseEntity {
   content: string;
 
   @ManyToOne(() => UserEntitiy)
-  @JoinColumn({ name: 'member_id' })
+  @JoinColumn({ name: 'user_id' })
   user: UserEntitiy;
-
-  @Column()
-  member_id: number;
 
   @CreateDateColumn()
   created_at: Date;

@@ -34,7 +34,7 @@ export class UpdateArticleUseCase
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (article.authorId !== request.userId) {
+    if (article.userId !== request.userIdFromDB) {
       throw new ForbiddenException('작성자만 수정할 수 있습니다.');
     }
 
@@ -46,7 +46,7 @@ export class UpdateArticleUseCase
           typeof request.content !== 'undefined'
             ? request.content
             : article.content,
-        authorId: article.authorId,
+        userId: article.userId,
       },
       article.id,
     );

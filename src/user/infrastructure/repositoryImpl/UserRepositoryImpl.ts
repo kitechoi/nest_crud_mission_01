@@ -11,6 +11,7 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly userEntityRepository: Repository<UserEntitiy>,
   ) {}
 
+  // username (문자아이디로 찾는 함수)
   async findById(username: string): Promise<User | null> {
     const entity = await this.userEntityRepository
       .createQueryBuilder('user')

@@ -53,7 +53,7 @@ export class ArticleController {
           id: article.id.toNumber(),
           title: article.title,
           content: article.content,
-          authorId: username,
+          username: username, // 유저 문자 아이디
         },
       };
     } catch (error) {
@@ -70,10 +70,13 @@ export class ArticleController {
     @Req() request: Request,
   ) {
     try {
-      const { userId } = (request as any).user;
+      if (!request.user) {
+        throw new UnauthorizedException();
+      }
+      const { username, userIdFromDB } = request.user;
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
-        userId: userId,
+        userIdFromDB: userIdFromDB,
       });
       if (!ok) {
         throw new InternalServerErrorException();

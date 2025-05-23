@@ -33,7 +33,7 @@ export class DeleteArticleUseCase
     }
 
     // User 테이블과 연동하여 userId 기반으로 변경 필요 => ing
-    if (article.authorId !== request.userId) {
+    if (article.userId !== request.userIdFromDB) {
       throw new ForbiddenException('작성자만 삭제할 수 있습니다.');
     }
 

@@ -32,7 +32,7 @@ export class ArticleRepositoryImplMapper {
       {
         title: entity.title,
         content: entity.content,
-        authorId: entity.user.username,
+        userId: entity.user.id,
       },
       UniqueEntityID.create(entity.id),
     );

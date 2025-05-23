@@ -7,7 +7,8 @@ import { User } from 'src/user/domain/User';
 export interface ArticleProps {
   title: string;
   content: string;
-  authorId: string; // 유저 userId
+  // authorId: string; // 유저 username
+  userId: number; // 유저 pk
 }
 
 export class Article extends AggregateRoot<ArticleProps> {
@@ -24,9 +25,9 @@ export class Article extends AggregateRoot<ArticleProps> {
       return Result.fail('본문은 2000자 이하로 입력해야 합니다.');
     }
 
-    // if (!props.authorId ) {
-    //   return Result.fail('작성자가 확인돼야 합니다.');
-    // }
+    if (!props.userId ) {
+      return Result.fail('작성자가 확인돼야 합니다.');
+    }
 
     return Result.ok(new Article(props, id));
   }
@@ -43,7 +44,7 @@ export class Article extends AggregateRoot<ArticleProps> {
     return this.props.content;
   }
 
-  get authorId(): string {
-    return this.props.authorId;
+  get userId(): number {
+    return this.props.userId;
   }
 }
