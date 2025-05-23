@@ -28,7 +28,7 @@ export class CreateArticleUseCase
     const articleResult = Article.createNew({
       title: request.title,
       content: request.content,
-      authorId: request.userId,
+      authorId: request.username,
     });
 
     if (!articleResult.isSuccess) {

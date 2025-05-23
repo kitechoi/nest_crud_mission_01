@@ -24,7 +24,7 @@ export class AuthUseCase {
       throw new BadRequestException(passwordResult.error);
     }
 
-    const user = await this.userUseCase.execute({ userId: request.userId });
+    const user = await this.userUseCase.execute({ username: request.username });
 
     if (user && user.user.userPassword.equals(passwordResult.value)) {
       const { userPassword, ...result } = user.user;
@@ -38,7 +38,7 @@ export class AuthUseCase {
     const payload = { 
       id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id, 
       name: user.name, 
-      sub: user.userId };
+      sub: user.username };
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };

@@ -11,10 +11,10 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly userEntityRepository: Repository<UserEntitiy>,
   ) {}
 
-  async findById(userId: string): Promise<User | null> {
+  async findById(username: string): Promise<User | null> {
     const entity = await this.userEntityRepository
       .createQueryBuilder('user')
-      .where('user.user_id = :user_id', { user_id: userId })
+      .where('user.username = :username', { username: username })
       .getOne();
       
     return entity ? UserRepositoryImplMapper.toDomain(entity) : null;

@@ -8,13 +8,13 @@ import { User } from 'src/user/domain/User';
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   constructor(private authUseCase: AuthUseCase) {
     super({
-      usernameField: 'userId',
+      usernameField: 'username',
       passwordField: 'userPassword',
     });
   }
 
-  async validate(userId: string, userPassword: string): Promise<User> {
-    const user = await this.authUseCase.validateUser({ userId, userPassword });
+  async validate(username: string, userPassword: string): Promise<User> {
+    const user = await this.authUseCase.validateUser({ username, userPassword });
     if (!user) {
       throw new UnauthorizedException();
     }

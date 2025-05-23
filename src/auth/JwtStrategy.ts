@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     console.log('userIdFromDB:', Number(payload.id));
     return {
       userIdFromDB: Number(payload.id),
-      userId: payload.sub,
+      username: payload.sub,
       name: payload.name,
     };
   }

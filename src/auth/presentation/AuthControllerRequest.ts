@@ -1,4 +1,4 @@
 export class AuthControllerRequestBody {
-  userId: string;
+  username: string;
   userPassword: string;
 }

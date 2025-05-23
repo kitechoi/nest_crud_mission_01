@@ -1,3 +1,3 @@
 export interface FindUserUseCaseRequest {
-  userId: string;
+  username: string;
 }

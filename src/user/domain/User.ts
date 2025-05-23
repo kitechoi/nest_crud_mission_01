@@ -4,7 +4,7 @@ import { Result } from 'src/shared/core/domain/Result';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 
 export interface UserProps {
-  userId: string;
+  username: string;
   userPassword: Password;
   name: string;
   // isDeleted: boolean;
@@ -26,8 +26,8 @@ export class User extends AggregateRoot<UserProps> {
     return this.create({ ...props });
   }
 
-  get userId(): string {
-    return this.props.userId;
+  get username(): string {
+    return this.props.username;
   }
 
   get userPassword(): Password {

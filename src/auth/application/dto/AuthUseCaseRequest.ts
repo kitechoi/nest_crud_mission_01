@@ -1,4 +1,4 @@
 export interface AuthUseCaseRequest {
-  userId: string;
+  username: string;
   userPassword: string;
 }

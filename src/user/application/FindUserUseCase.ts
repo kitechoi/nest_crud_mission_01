@@ -18,7 +18,7 @@ export class UserUseCase
   async execute(
     request: FindUserUseCaseRequest,
   ): Promise<FindUserUseCaseResponse> {
-    const user = await this.userRepository.findById(request.userId);
+    const user = await this.userRepository.findById(request.username);
 
     if (!user) {
       throw new NotFoundException();

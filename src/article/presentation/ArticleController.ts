@@ -33,11 +33,11 @@ export class ArticleController {
       if (!request.user) {
         throw new UnauthorizedException();
       }
-      const { userId, userIdFromDB } = request.user;
+      const { username, userIdFromDB } = request.user;
 
-      console.log(userId, userIdFromDB, ';;;;');
+      console.log(username, userIdFromDB, ';;;;');
       const { ok, article } = await this.createArticleUseCase.execute({
-        userId: userId,
+        username: username,
         title: body.title,
         content: body.content,
         userIdFromDB: userIdFromDB,
@@ -53,7 +53,7 @@ export class ArticleController {
           id: article.id.toNumber(),
           title: article.title,
           content: article.content,
-          authorId: userId,
+          authorId: username,
         },
       };
     } catch (error) {

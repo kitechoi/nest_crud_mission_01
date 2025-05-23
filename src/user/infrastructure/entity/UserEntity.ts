@@ -8,7 +8,7 @@ export class UserEntitiy extends BaseEntity {
   id: number;
 
   @Column()
-  user_id: string;
+  username: string;
   
   @Column()
   user_password: string;
@@ -17,7 +17,7 @@ export class UserEntitiy extends BaseEntity {
   name: string;
 
   @OneToMany(() => ArticleEntity, (entity) => entity.user)
-  @JoinColumn({ referencedColumnName: 'user_id' })
+  @JoinColumn({ referencedColumnName: 'username' })
   article: ArticleEntity[];
 
   @CreateDateColumn()

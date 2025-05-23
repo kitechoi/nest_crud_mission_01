@@ -15,7 +15,7 @@ export class UserRepositoryImplMapper {
 
     const userResult = User.create(
       {
-        userId: entity.user_id,
+        username: entity.username,
         userPassword: pwResult.value,
         name: entity.name,
       },
