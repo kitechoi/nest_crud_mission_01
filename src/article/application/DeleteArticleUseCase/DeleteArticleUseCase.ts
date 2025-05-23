@@ -13,6 +13,7 @@ import {
 } from '../../infrastructure/ArticleRepository';
 import { DeleteArticleUseCaseResponse } from './dto/DeleteArticleUseCaseResponse';
 import { UseCase } from 'src/shared/core/application/UseCase';
+import { Transactional, TransactionalError } from 'typeorm-transactional';
 
 @Injectable()
 export class DeleteArticleUseCase
@@ -23,6 +24,7 @@ export class DeleteArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
+  // @Transactional()
   async execute(
     request: DeleteArticleUseCaseRequest,
   ): Promise<DeleteArticleUseCaseResponse> {
@@ -32,7 +34,6 @@ export class DeleteArticleUseCase
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    // User 테이블과 연동하여 userId 기반으로 변경 필요 => ing
     if (article.userId !== request.userIdFromDB) {
       throw new ForbiddenException('작성자만 삭제할 수 있습니다.');
     }

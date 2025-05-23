@@ -17,7 +17,7 @@ export class ArticleRepositoryImplMapper {
     entity.title = article.title;
     entity.content = article.content;
 
-    const user = new UserEntitiy(); // userrepo를 조회해야 할 것 같은데.
+    const user = new UserEntitiy(); // userrepo를 조회해서 user 정보 가지고 오기 vs new Entity
     
     user.id = Number(userIdFromDB);
     entity.user = user;
