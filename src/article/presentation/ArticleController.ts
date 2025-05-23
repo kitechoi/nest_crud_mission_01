@@ -89,6 +89,7 @@ export class ArticleController {
     }
   }
 
+  // TODO: 해당 사용자의 게시글만 모아볼 수 있도록 쿼리파라미터 수정
   @Get()
   @HttpCode(HttpStatus.OK)
   async getArticle(
@@ -136,12 +137,14 @@ export class ArticleController {
     result: ArticleControllerUpdateArticleResponse;
   }> {
     try {
-      const { userId, userIdFromDB } = (request as any).user;
+      if (!request.user) {
+        throw new UnauthorizedException();
+      }
+      const { username, userIdFromDB } = request.user;
       const { ok, article } = await this.updateArticleUseCase.execute({
         id: Number(params.id),
         title: body.title,
         content: body.content,
-        userId: userId,
         userIdFromDB: userIdFromDB,
       });
       if (!ok) {
@@ -155,6 +158,7 @@ export class ArticleController {
           id: article.id.toNumber(),
           title: article.title,
           content: article.content,
+          username: username,
         },
       };
     } catch (error) {
