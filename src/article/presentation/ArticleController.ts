@@ -90,6 +90,7 @@ export class ArticleController {
   }
 
   // TODO: 해당 사용자의 게시글만 모아볼 수 있도록 쿼리파라미터 수정
+  // result에 누가 쓴 글인지도 담겼으면 좋겠는데, article이 갖는 건 user PK라서 어떻게 username을 넘길 것인가.
   @Get()
   @HttpCode(HttpStatus.OK)
   async getArticle(
@@ -103,6 +104,7 @@ export class ArticleController {
       const { ok, articles } = await this.findAllArticleUseCase.execute({
         page: Number(query.page),
         limit: Number(query.limit),
+        username: query.username,
       });
       if (!ok) {
         throw new InternalServerErrorException();

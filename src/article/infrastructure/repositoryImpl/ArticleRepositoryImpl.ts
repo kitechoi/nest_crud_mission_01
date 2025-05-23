@@ -29,13 +29,20 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   //   return entity;
   // }
 
-  async findAll(limit: number, offset: number): Promise<Article[]> {
-    const entities = await this.articleEntityRepository
+  async findAll(limit: number, offset: number, username?: string): Promise<Article[]> {
+    const tempEntities = await this.articleEntityRepository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
       .orderBy('article.created_at', 'DESC')
       .take(limit)
-      .skip(offset)
-      .getMany();
+      .skip(offset);
+      // .getMany();
+
+      if (username) {
+        tempEntities.where('user.username = :username', { username });
+      }
+      
+      const entities = await tempEntities.getMany();
 
     return entities.map((entity) =>
       ArticleRepositoryImplMapper.toDomain(entity),

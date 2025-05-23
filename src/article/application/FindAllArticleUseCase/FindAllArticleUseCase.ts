@@ -15,10 +15,10 @@ export class FindAllArticleUseCase implements UseCase<FindAllArticleUseCaseReque
   async execute(
     request: FindAllArticleUseCaseRequest): Promise<FindAllArticleUseCaseResponse> {
       
-    const { page, limit } = request;
+    const { page, limit, username } = request;
     const offset = (page - 1) * limit;
 
-    const articles = await this.articleRepository.findAll(limit, offset);
+    const articles = await this.articleRepository.findAll(limit, offset, username);
 
     return {
       ok: true,

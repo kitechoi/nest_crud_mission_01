@@ -23,4 +23,5 @@ export class ArticleControllerUpdateArticleRequestParam {
 export class ArticleControllerFindAllArticleRequestQuery {
   page: string;
   limit: string;
+  username?: string;
 }
