@@ -8,6 +8,8 @@ import {
   ARTICLE_REPOSITORY,
 } from '../../infrastructure/ArticleRepository';
 import { UseCase } from 'src/shared/core/application/UseCase';
+import { Transactional } from 'typeorm-transactional';
+
 
 @Injectable()
 export class CreateArticleUseCase
@@ -18,6 +20,7 @@ export class CreateArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
+  @Transactional()
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
@@ -31,7 +34,7 @@ export class CreateArticleUseCase
     if (!articleResult.isSuccess) {
       throw new BadRequestException(articleResult.error);
     }
-    console.log(articleResult.value);
+    console.log('articleResult.value로그: ',articleResult.value);
 
     const savedArticle = await this.articleRepository.save(
       articleResult.value, request.userIdFromDB);

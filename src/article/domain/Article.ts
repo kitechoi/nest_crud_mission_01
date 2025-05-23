@@ -24,9 +24,9 @@ export class Article extends AggregateRoot<ArticleProps> {
       return Result.fail('본문은 2000자 이하로 입력해야 합니다.');
     }
 
-    if (!props.authorId ) {
-      return Result.fail('작성자가 확인돼야 합니다.');
-    }
+    // if (!props.authorId ) {
+    //   return Result.fail('작성자가 확인돼야 합니다.');
+    // }
 
     return Result.ok(new Article(props, id));
   }

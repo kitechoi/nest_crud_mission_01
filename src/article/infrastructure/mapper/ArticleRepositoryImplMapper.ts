@@ -10,7 +10,7 @@ export class ArticleRepositoryImplMapper {
   static toEntity(article: Article, userIdFromDB: number): ArticleEntity {
     const entity = new ArticleEntity();
 
-    if (Number(article.id) !== 0) {
+    if (article.id) {
       entity.id = article.id.toNumber();
     }
     
@@ -32,7 +32,7 @@ export class ArticleRepositoryImplMapper {
       {
         title: entity.title,
         content: entity.content,
-        authorId: "",
+        authorId: entity.user.user_id,
       },
       UniqueEntityID.create(entity.id),
     );
