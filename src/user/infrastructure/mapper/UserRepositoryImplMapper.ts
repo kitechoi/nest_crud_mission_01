@@ -17,7 +17,7 @@ export class UserRepositoryImplMapper {
       {
         username: entity.username,
         userPassword: pwResult.value,
-        name: entity.name,
+        nickname: entity.nickname,
       },
       UniqueEntityID.create(entity.id),
     );

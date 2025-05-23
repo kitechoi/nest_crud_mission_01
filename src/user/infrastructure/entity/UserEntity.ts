@@ -3,18 +3,17 @@ import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, U
 
 @Entity('users')
 export class UserEntitiy extends BaseEntity {
-
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   username: string;
-  
+
   @Column()
   user_password: string;
 
   @Column()
-  name: string;
+  nickname: string;
 
   @OneToMany(() => ArticleEntity, (entity) => entity.user)
   @JoinColumn({ referencedColumnName: 'username' })

@@ -35,10 +35,11 @@ export class AuthUseCase {
 
   // Controller signin 과정 중 호출됨
   async generateAccessToken(user: User): Promise<{ accessToken: string }> {
-    const payload = { 
-      id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id, 
-      name: user.name, 
-      sub: user.username };
+    const payload = {
+      id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
+      nickname: user.nickname,
+      sub: user.username,
+    };
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };
