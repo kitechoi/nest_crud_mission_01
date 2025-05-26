@@ -1,3 +1,4 @@
+// src/shared/filters/AllExceptionsFilter.ts
 import {
   ExceptionFilter,
   Catch,
@@ -15,31 +16,43 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const { httpAdapter } = this.httpAdapterHost;
-    const httpStatus = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
     const message =
       exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal server error';
+    const url = httpAdapter.getRequestUrl(request);
+    const method = request.method;
 
-        this.logger.error(
-          `[${request.method}] ${httpAdapter.getRequestUrl(request)} | statusCode: ${httpStatus} | message: ${
-            typeof message === 'string' ? message : JSON.stringify(message)
-          } | timestamp: ${new Date().toISOString()}`,
-        );        
-
-    response.status(httpStatus).json({
-      statusCode: httpStatus,
-      ok: false,
-      path: httpAdapter.getRequestUrl(request),
+    const responseBody = {
+      statusCode: status,
       timestamp: new Date().toISOString(),
-      message,
+      path: url,
+      ok: false,
+      error: {
+        message:
+          exception instanceof Error ? exception.message : String(message),
+      },
+      result: {},
+    };
+
+    this.logger.error({
+      method,
+      url,
+      statusCode: status,
+      message: responseBody.error.message,
+      timestamp: responseBody.timestamp,
     });
+
+    httpAdapter.reply(response, responseBody, status);
   }
 }
