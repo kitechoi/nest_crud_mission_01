@@ -13,7 +13,6 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpRequestLoggingInterceptor } from './shared/interceptors/HttpRequestLogginInterceptor';
 import { HttpResponseLoggingInterceptor } from './shared/interceptors/HttpResponseLoggingInterceptor';
-import { HttpLogger } from './shared/log/HttpLogger';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
@@ -25,13 +24,15 @@ async function bootstrap() {
   app.use(cookieParser());
 
   const httpAdapterHost = app.get(HttpAdapterHost);
-  
+
   app.useGlobalInterceptors(
-    new HttpRequestLoggingInterceptor(),
     new HttpResponseLoggingInterceptor(),
+    new HttpRequestLoggingInterceptor(),
   );
+
+
+
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
-  
   await app.listen(process.env.PORT ?? 80);
 }
 bootstrap();
