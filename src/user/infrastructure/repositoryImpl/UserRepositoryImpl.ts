@@ -12,13 +12,12 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   // username (문자아이디로 찾는 함수)
-  async findById(username: string): Promise<User | null> {
+  async findByUsername(username: string): Promise<User | null> {
     const entity = await this.userEntityRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username: username })
       .getOne();
-      
+
     return entity ? UserRepositoryImplMapper.toDomain(entity) : null;
   }
-  
 }

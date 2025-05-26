@@ -4,6 +4,6 @@ export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
 
 export interface UserRepository {
   // save(user: User): Promise<User>;
-  findById(username: string): Promise<User | null>;
+  findByUsername(username: string): Promise<User | null>;
   // delete(id: number): Promise<void>;
 }

@@ -35,7 +35,7 @@ export class ArticleController {
       }
       const { username, userIdFromDB } = request.user;
 
-      console.log(username, userIdFromDB, ';;;;');
+      console.log('username: ', username, 'userIdFromDB: ', userIdFromDB, );
       const { ok, article } = await this.createArticleUseCase.execute({
         username: username,
         title: body.title,
