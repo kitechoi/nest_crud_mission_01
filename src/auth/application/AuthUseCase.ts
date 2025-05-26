@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserUseCase } from 'src/user/application/FindUserUseCase';
+import { FindUserByUsernameUseCase } from 'src/user/application/FindUserByUsernameUseCase';
 import { AuthUseCaseRequest } from './dto/AuthUseCaseRequest';
 import { Password } from 'src/user/domain/Password';
 import { JwtService } from '@nestjs/jwt';
@@ -12,11 +12,10 @@ import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { jwtConstants } from '../constants';
 import { Response as ExpressResponse } from 'express';
 
-
 @Injectable()
 export class AuthUseCase {
   constructor(
-    private userUseCase: UserUseCase,
+    private userUseCase: FindUserByUsernameUseCase,
     private jwtService: JwtService,
   ) {}
 

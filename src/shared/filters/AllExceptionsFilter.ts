@@ -12,7 +12,6 @@ import { HttpLogger } from '../log/HttpLogger';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private readonly logger = new Logger(AllExceptionsFilter.name);
 
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 

@@ -7,6 +7,7 @@ import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArtic
 import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
 import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
 import { Request } from 'express';
+import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase';
 
 @Controller('articles')
 export class ArticleController {
@@ -16,6 +17,7 @@ export class ArticleController {
     private readonly deleteArticleUseCase: DeleteArticleUseCase,
     private readonly findAllArticleUseCase: FindAllArticleUseCase,
     private readonly updateArticleUseCase: UpdateArticleUseCase,
+    private readonly findUserByIdUseCase: FindUserByIdUseCase,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -89,8 +91,44 @@ export class ArticleController {
     }
   }
 
-  // TODO: 해당 사용자의 게시글만 모아볼 수 있도록 쿼리파라미터 수정
-  // result에 누가 쓴 글인지도 담겼으면 좋겠는데, article이 갖는 건 user PK라서 어떻게 username을 넘길 것인가.
+  // // TODO: 해당 사용자의 게시글만 모아볼 수 있도록 쿼리파라미터 수정
+  // // result에 누가 쓴 글인지도 담겼으면 좋겠는데, article이 갖는 건 user PK라서 어떻게 username을 넘길 것인가.
+  // @Get()
+  // @HttpCode(HttpStatus.OK)
+  // async getArticle(
+  //   @Query() query: ArticleControllerFindAllArticleRequestQuery,
+  // ): Promise<{
+  //   statusCode: number;
+  //   ok: true;
+  //   result: ArticleControllerFineAllArticleResponse[];
+  // }> {
+  //   try {
+  //     const { ok, articles } = await this.findAllArticleUseCase.execute({
+  //       page: Number(query.page),
+  //       limit: Number(query.limit),
+  //       username: query.username,
+  //     });
+  //     if (!ok) {
+  //       throw new InternalServerErrorException();
+  //     }
+
+  //     const result = articles.map((article) => ({
+  //       id: article.id.toNumber(),
+  //       title: article.title,
+  //       content: article.content,
+  //     }));
+
+  //     return {
+  //       statusCode: HttpStatus.OK,
+  //       ok: true,
+  //       result: result,
+  //     };
+  //   } catch (error) {
+  //     this.logger.error(JSON.stringify(error));
+  //     throw error;
+  //   }
+  // }
+
   @Get()
   @HttpCode(HttpStatus.OK)
   async getArticle(
@@ -106,20 +144,29 @@ export class ArticleController {
         limit: Number(query.limit),
         username: query.username,
       });
-      if (!ok) {
-        throw new InternalServerErrorException();
-      }
 
-      const result = articles.map((article) => ({
-        id: article.id.toNumber(),
-        title: article.title,
-        content: article.content,
-      }));
+      if (!ok) throw new InternalServerErrorException();
+
+      const result = await Promise.all(
+        articles.map(async (article) => {
+          const { username, nickname } = await this.findUserByIdUseCase.execute(
+            article.userId,
+          );
+
+          return {
+            id: article.id.toNumber(),
+            title: article.title,
+            content: article.content,
+            username,
+            nickname,
+          };
+        }),
+      );
 
       return {
         statusCode: HttpStatus.OK,
         ok: true,
-        result: result,
+        result,
       };
     } catch (error) {
       this.logger.error(JSON.stringify(error));

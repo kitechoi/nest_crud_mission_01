@@ -20,4 +20,13 @@ export class UserRepositoryImpl implements UserRepository {
 
     return entity ? UserRepositoryImplMapper.toDomain(entity) : null;
   }
+
+  async findById(id: number): Promise<User | null> {
+    const entity = await this.userEntityRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id: id })
+      .getOne();
+
+    return entity ? UserRepositoryImplMapper.toDomain(entity) : null;
+  }
 }

@@ -1,21 +1,23 @@
 import { Module } from '@nestjs/common';
-import { UserUseCase } from './application/FindUserUseCase';
+import { FindUserByUsernameUseCase } from './application/FindUserByUsernameUseCase';
 import { UserRepositoryImplMapper } from './infrastructure/mapper/UserRepositoryImplMapper';
 import { USER_REPOSITORY } from './infrastructure/UserRepository';
 import { UserRepositoryImpl } from './infrastructure/repositoryImpl/UserRepositoryImpl';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntitiy } from './infrastructure/entity/UserEntity';
+import { FindUserByIdUseCase } from './application/FindUserByIdUseCase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntitiy])],
   providers: [
-    UserUseCase,
+    FindUserByUsernameUseCase,
+    FindUserByIdUseCase,
     UserRepositoryImplMapper,
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,
     },
   ],
-  exports: [UserUseCase],
+  exports: [FindUserByUsernameUseCase, FindUserByIdUseCase],
 })
 export class UserModule {}

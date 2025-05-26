@@ -7,7 +7,7 @@ import { UseCase } from 'src/shared/core/application/UseCase';
 // This should be a real class/interface representing a user entity
 
 @Injectable()
-export class UserUseCase
+export class FindUserByUsernameUseCase
   implements UseCase<FindUserUseCaseRequest, FindUserUseCaseResponse>
 {
   constructor(
