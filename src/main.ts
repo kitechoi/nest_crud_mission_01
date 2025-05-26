@@ -11,7 +11,6 @@ initializeTransactionalContext();
 
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { HttpLoggingInterceptor } from './shared/interceptors/HttpLoggingInterceptor';
 import { HttpRequestLoggingInterceptor } from './shared/interceptors/HttpRequestLogginInterceptor';
 import { HttpResponseLoggingInterceptor } from './shared/interceptors/HttpResponseLoggingInterceptor';
 
@@ -27,7 +26,6 @@ async function bootstrap() {
   const httpAdapterHost = app.get(HttpAdapterHost);
   
   app.useGlobalInterceptors(
-    new HttpLoggingInterceptor(),
     new HttpRequestLoggingInterceptor(),
     new HttpResponseLoggingInterceptor(),
   );
