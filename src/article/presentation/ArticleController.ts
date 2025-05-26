@@ -1,13 +1,42 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger, UseGuards, Req, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Logger,
+  UseGuards,
+  Req,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
-import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
-import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
+import {
+  ArticleControllerCreateArticleRequestBody,
+  ArticleControllerDeleteArticleRequestBody,
+  ArticleControllerDeleteArticleRequestParam,
+  ArticleControllerFindAllArticleRequestQuery,
+  ArticleControllerUpdateArticleRequestBody,
+  ArticleControllerUpdateArticleRequestParam,
+} from './dto/ArticleControllerRequest';
+import {
+  ArticleControllerCreateArticleResponse,
+  ArticleControllerUpdateArticleResponse,
+  ArticleControllerFineAllArticleResponse,
+} from './dto/ArticleControllerResponse';
 import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
 import { Request } from 'express';
-import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase';
+import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
 
 @Controller('articles')
 export class ArticleController {
@@ -149,16 +178,16 @@ export class ArticleController {
 
       const result = await Promise.all(
         articles.map(async (article) => {
-          const { username, nickname } = await this.findUserByIdUseCase.execute(
-            article.userId,
-          );
+          const { user } = await this.findUserByIdUseCase.execute({
+            id: article.userId,
+          });
 
           return {
             id: article.id.toNumber(),
             title: article.title,
             content: article.content,
-            username,
-            nickname,
+            username: user.username,
+            nickname: user.nickname,
           };
         }),
       );

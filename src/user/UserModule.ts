@@ -5,7 +5,7 @@ import { USER_REPOSITORY } from './infrastructure/UserRepository';
 import { UserRepositoryImpl } from './infrastructure/repositoryImpl/UserRepositoryImpl';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntitiy } from './infrastructure/entity/UserEntity';
-import { FindUserByIdUseCase } from './application/FindUserByIdUseCase';
+import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserByIdUseCase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntitiy])],
