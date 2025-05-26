@@ -1,12 +1,12 @@
 import { ArticleEntity } from 'src/article/infrastructure/entity/ArticleEntity';
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn,  } from 'typeorm';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn, Unique,  } from 'typeorm';
 
 @Entity('users')
 export class UserEntitiy extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
