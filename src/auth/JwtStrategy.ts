@@ -1,22 +1,24 @@
+// JwtStrategy.ts
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtConstants } from './constants';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
+    const secretOrKey = configService.get<string>('JWT_SECRET');
+    if (!secretOrKey) {
+      throw new Error('JWT_SECRET is not defined in .env');
+    }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: secretOrKey,
     });
   }
 
   async validate(payload: any) {
-    // req.user 에 들어갈 값
-    console.log('payload:', payload);
-    console.log('userIdFromDB:', Number(payload.id));
     return {
       userIdFromDB: Number(payload.id),
       username: payload.sub,
