@@ -1,4 +1,3 @@
-// src/shared/filters/AllExceptionsFilter.ts
 import {
   ExceptionFilter,
   Catch,
@@ -9,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request, Response } from 'express';
+import { HttpLogger } from '../log/HttpLogger';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -18,11 +18,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const httpResponse = ctx.getResponse<Response>();
+    const httpRequest = ctx.getRequest<Request>();
     const { httpAdapter } = this.httpAdapterHost;
-
-    const status =
+    const logger = new HttpLogger('response');
+    
+    const httpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -30,13 +31,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal server error';
-    const url = httpAdapter.getRequestUrl(request);
-    const method = request.method;
+    const httpUrl = httpAdapter.getRequestUrl(httpRequest);
+    const httpMethod = httpRequest.method;
 
     const responseBody = {
-      statusCode: status,
+      statusCode: httpStatus,
       timestamp: new Date().toISOString(),
-      path: url,
+      path: httpUrl,
       ok: false,
       error: {
         message:
@@ -44,15 +45,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
       },
       result: {},
     };
+    if (exception instanceof HttpException) {
+      responseBody.result = exception.getResponse();
+    }
 
-    this.logger.error({
-      method,
-      url,
-      statusCode: status,
-      message: responseBody.error.message,
-      timestamp: responseBody.timestamp,
-    });
+    logger
+      .log({
+        context: 'response',
+        url: httpUrl,
+        method: httpMethod,
+        body: responseBody,
+        headers: httpResponse.getHeaders(),
+      })
+      .then((r) => r);
 
-    httpAdapter.reply(response, responseBody, status);
+    httpAdapter.reply(httpResponse, responseBody, httpStatus);
   }
 }

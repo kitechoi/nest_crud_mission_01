@@ -13,6 +13,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpRequestLoggingInterceptor } from './shared/interceptors/HttpRequestLogginInterceptor';
 import { HttpResponseLoggingInterceptor } from './shared/interceptors/HttpResponseLoggingInterceptor';
+import { HttpLogger } from './shared/log/HttpLogger';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';

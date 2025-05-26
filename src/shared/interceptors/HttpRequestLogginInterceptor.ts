@@ -6,21 +6,23 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { HttpLogger } from '../log/HttpLogger';
 
 @Injectable()
 export class HttpRequestLoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(HttpRequestLoggingInterceptor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<unknown>> {
     const request = context.switchToHttp().getRequest();
-    const { method, originalUrl, body, query, params } = request;
 
-    this.logger.log(
-      `[Req] ${method} ${originalUrl} | query: ${JSON.stringify(query)} | params: ${JSON.stringify(
-        params,
-      )} | body: ${JSON.stringify(body)}`,
-    );
-
+    const logger = new HttpLogger('request');
+    await logger.log({
+      context: 'request',
+      url: request.originalUrl,
+      method: request.method,
+      body: request.body,
+      // headers: request.headers,
+    });
+    
     return next.handle();
   }
 }

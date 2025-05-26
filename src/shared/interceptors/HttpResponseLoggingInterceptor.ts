@@ -7,32 +7,35 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { HttpLogger } from '../log/HttpLogger';
 
 @Injectable()
 export class HttpResponseLoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(HttpResponseLoggingInterceptor.name);
-
-  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const now = Date.now();
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<unknown>> {
+    
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
-
-
-    const { method, originalUrl } = request;
+    
+    const logger = new HttpLogger('response');
 
     return next.handle().pipe(
-      map((data) => ({
-        statusCode: response.statusCode,
-        ok: true,
-        path: originalUrl,
-        timestamp: new Date().toISOString(),
-        result: data,
-      })),
-      tap(() => {
-        const delay = Date.now() - now;
-        this.logger.log(
-          `[Res] ${response.statusCode} | ${method} ${originalUrl} +${delay}ms`,
-        );
+      map((data) => {
+        if (request.path === '/') {
+          return data;
+        }
+
+        return {
+          ...data,
+        };
+      }),
+      tap(async (data) => {
+        await logger.log({
+          context: 'response',
+          url: request.url,
+          method: request.method,
+          body: data as object,
+          // headers: response.getHeaders(),
+        });
       }),
     );
   }
