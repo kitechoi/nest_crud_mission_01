@@ -15,10 +15,6 @@ export class UserEntitiy extends BaseEntity {
   @Column()
   nickname: string;
 
-  @OneToMany(() => ArticleEntity, (entity) => entity.user)
-  @JoinColumn({ referencedColumnName: 'username' })
-  article: ArticleEntity[];
-
   @CreateDateColumn()
   create_at: Date;
 
