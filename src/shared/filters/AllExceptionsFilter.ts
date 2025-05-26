@@ -31,14 +31,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
         this.logger.error(
           `[${request.method}] ${httpAdapter.getRequestUrl(request)} | statusCode: ${httpStatus} | message: ${
             typeof message === 'string' ? message : JSON.stringify(message)
-          } | path: ${httpAdapter.getRequestUrl(request)} | timestamp: ${new Date().toISOString()}`,
+          } | timestamp: ${new Date().toISOString()}`,
         );        
 
     response.status(httpStatus).json({
       statusCode: httpStatus,
       ok: false,
-      timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(request),
+      timestamp: new Date().toISOString(),
       message,
     });
   }

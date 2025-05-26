@@ -6,13 +6,14 @@ import { DataSource } from 'typeorm';
 import { AppDataSource } from './data-source';
 import * as cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from './shared/filters/AllExceptionsFilter';
-import { SuccessResponseInterceptor } from './shared/interceptors/SuccessResponseInterceptor';
 
 initializeTransactionalContext();
 
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpLoggingInterceptor } from './shared/interceptors/HttpLoggingInterceptor';
+import { HttpRequestLoggingInterceptor } from './shared/interceptors/HttpRequestLogginInterceptor';
+import { HttpResponseLoggingInterceptor } from './shared/interceptors/HttpResponseLoggingInterceptor';
 
 async function bootstrap() {
   process.env.TZ = 'Asia/Seoul';
@@ -27,7 +28,8 @@ async function bootstrap() {
   
   app.useGlobalInterceptors(
     new HttpLoggingInterceptor(),
-    new SuccessResponseInterceptor(),
+    new HttpRequestLoggingInterceptor(),
+    new HttpResponseLoggingInterceptor(),
   );
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
   
