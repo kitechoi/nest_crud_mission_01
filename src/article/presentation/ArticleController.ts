@@ -1,10 +1,39 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger, UseGuards, Req, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Logger,
+  UseGuards,
+  Req,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
-import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
-import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
+import {
+  ArticleControllerCreateArticleRequestBody,
+  ArticleControllerDeleteArticleRequestBody,
+  ArticleControllerDeleteArticleRequestParam,
+  ArticleControllerFindAllArticleRequestQuery,
+  ArticleControllerUpdateArticleRequestBody,
+  ArticleControllerUpdateArticleRequestParam,
+} from './dto/ArticleControllerRequest';
+import {
+  ArticleControllerCreateArticleResponse,
+  ArticleControllerUpdateArticleResponse,
+  ArticleControllerFineAllArticleResponse,
+} from './dto/ArticleControllerResponse';
 import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
 import { Request } from 'express';
 import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
@@ -26,11 +55,7 @@ export class ArticleController {
   async createArticle(
     @Req() request: Request,
     @Body() body: ArticleControllerCreateArticleRequestBody,
-  ): Promise<{
-    statusCode: number;
-    ok: true;
-    result: ArticleControllerCreateArticleResponse;
-  }> {
+  ): Promise<ArticleControllerCreateArticleResponse> {
     try {
       if (!request.user) {
         throw new UnauthorizedException();
@@ -49,14 +74,10 @@ export class ArticleController {
       }
       console.log(article);
       return {
-        statusCode: HttpStatus.CREATED,
-        ok: true,
-        result: {
-          id: article.id.toNumber(),
-          title: article.title,
-          content: article.content,
-          username: username, // 유저 문자 아이디
-        },
+        id: article.id.toNumber(),
+        title: article.title,
+        content: article.content,
+        username: username, // 유저 문자 아이디
       };
     } catch (error) {
       this.logger.error(JSON.stringify(error));
@@ -90,44 +111,6 @@ export class ArticleController {
       throw error;
     }
   }
-
-  // // TODO: 해당 사용자의 게시글만 모아볼 수 있도록 쿼리파라미터 수정
-  // // result에 누가 쓴 글인지도 담겼으면 좋겠는데, article이 갖는 건 user PK라서 어떻게 username을 넘길 것인가.
-  // @Get()
-  // @HttpCode(HttpStatus.OK)
-  // async getArticle(
-  //   @Query() query: ArticleControllerFindAllArticleRequestQuery,
-  // ): Promise<{
-  //   statusCode: number;
-  //   ok: true;
-  //   result: ArticleControllerFineAllArticleResponse[];
-  // }> {
-  //   try {
-  //     const { ok, articles } = await this.findAllArticleUseCase.execute({
-  //       page: Number(query.page),
-  //       limit: Number(query.limit),
-  //       username: query.username,
-  //     });
-  //     if (!ok) {
-  //       throw new InternalServerErrorException();
-  //     }
-
-  //     const result = articles.map((article) => ({
-  //       id: article.id.toNumber(),
-  //       title: article.title,
-  //       content: article.content,
-  //     }));
-
-  //     return {
-  //       statusCode: HttpStatus.OK,
-  //       ok: true,
-  //       result: result,
-  //     };
-  //   } catch (error) {
-  //     this.logger.error(JSON.stringify(error));
-  //     throw error;
-  //   }
-  // }
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -173,11 +156,7 @@ export class ArticleController {
     @Param() params: ArticleControllerUpdateArticleRequestParam,
     @Req() request: Request,
     @Body() body: ArticleControllerUpdateArticleRequestBody,
-  ): Promise<{
-    statusCode: number;
-    ok: true;
-    result: ArticleControllerUpdateArticleResponse;
-  }> {
+  ): Promise<ArticleControllerUpdateArticleResponse> {
     try {
       if (!request.user) {
         throw new UnauthorizedException();
@@ -194,14 +173,10 @@ export class ArticleController {
       }
 
       return {
-        statusCode: HttpStatus.OK,
-        ok: true,
-        result: {
-          id: article.id.toNumber(),
-          title: article.title,
-          content: article.content,
-          username: username,
-        },
+        id: article.id.toNumber(),
+        title: article.title,
+        content: article.content,
+        username: username,
       };
     } catch (error) {
       this.logger.error(JSON.stringify(error));

@@ -35,18 +35,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const responseBody = {
       statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      path: httpUrl,
       ok: false,
+      path: httpUrl,
+      timestamp: new Date().toISOString(),
       error: {
         message:
           exception instanceof Error ? exception.message : String(message),
-      },
-      result: {},
+      }
     };    
-    if (exception instanceof HttpException) {
-      responseBody.result = exception.getResponse();
-    }
 
     logger
       .log({
@@ -54,7 +50,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         url: httpUrl,
         method: httpMethod,
         body: responseBody,
-        headers: httpResponse.getHeaders(),
+        // headers: httpResponse.getHeaders(),
       })
       .then((r) => r);
 
