@@ -1,39 +1,10 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  InternalServerErrorException,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Logger,
-  UseGuards,
-  Req,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, Param, Patch, Post, Query, Logger, UseGuards, Req, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
-import {
-  ArticleControllerCreateArticleRequestBody,
-  ArticleControllerDeleteArticleRequestBody,
-  ArticleControllerDeleteArticleRequestParam,
-  ArticleControllerFindAllArticleRequestQuery,
-  ArticleControllerUpdateArticleRequestBody,
-  ArticleControllerUpdateArticleRequestParam,
-} from './dto/ArticleControllerRequest';
-import {
-  ArticleControllerCreateArticleResponse,
-  ArticleControllerUpdateArticleResponse,
-  ArticleControllerFineAllArticleResponse,
-} from './dto/ArticleControllerResponse';
+import { ArticleControllerCreateArticleRequestBody, ArticleControllerDeleteArticleRequestBody, ArticleControllerDeleteArticleRequestParam, ArticleControllerFindAllArticleRequestQuery, ArticleControllerUpdateArticleRequestBody, ArticleControllerUpdateArticleRequestParam } from './dto/ArticleControllerRequest';
+import { ArticleControllerCreateArticleResponse, ArticleControllerUpdateArticleResponse, ArticleControllerFineAllArticleResponse } from './dto/ArticleControllerResponse';
 import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
 import { Request } from 'express';
 import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
@@ -162,11 +133,7 @@ export class ArticleController {
   @HttpCode(HttpStatus.OK)
   async getArticle(
     @Query() query: ArticleControllerFindAllArticleRequestQuery,
-  ): Promise<{
-    statusCode: number;
-    ok: true;
-    result: ArticleControllerFineAllArticleResponse[];
-  }> {
+  ): Promise<ArticleControllerFineAllArticleResponse[]> {
     try {
       const { ok, articles } = await this.findAllArticleUseCase.execute({
         page: Number(query.page),
@@ -174,9 +141,11 @@ export class ArticleController {
         username: query.username,
       });
 
-      if (!ok) throw new InternalServerErrorException();
+      if (!ok) {
+        throw new InternalServerErrorException();
+      }
 
-      const result = await Promise.all(
+      return Promise.all(
         articles.map(async (article) => {
           const { user } = await this.findUserByIdUseCase.execute({
             id: article.userId,
@@ -191,12 +160,6 @@ export class ArticleController {
           };
         }),
       );
-
-      return {
-        statusCode: HttpStatus.OK,
-        ok: true,
-        result,
-      };
     } catch (error) {
       this.logger.error(JSON.stringify(error));
       throw error;

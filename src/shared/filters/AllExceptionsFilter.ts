@@ -43,7 +43,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
           exception instanceof Error ? exception.message : String(message),
       },
       result: {},
-    };
+    };    
     if (exception instanceof HttpException) {
       responseBody.result = exception.getResponse();
     }
