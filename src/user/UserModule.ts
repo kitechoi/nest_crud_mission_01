@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FindUserByUsernameUseCase } from './application/FindUserByUsernameUseCase';
+import { FindUserByUsernameUseCase } from './application/FindUserByUsernameUseCase/FindUserByUsernameUseCase';
 import { UserRepositoryImplMapper } from './infrastructure/mapper/UserRepositoryImplMapper';
 import { USER_REPOSITORY } from './infrastructure/UserRepository';
 import { UserRepositoryImpl } from './infrastructure/repositoryImpl/UserRepositoryImpl';

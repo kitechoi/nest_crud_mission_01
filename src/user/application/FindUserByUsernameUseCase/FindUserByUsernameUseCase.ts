@@ -1,14 +1,16 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { USER_REPOSITORY, UserRepository } from '../infrastructure/UserRepository';
-import { FindUserUseCaseResponse } from './dto/FindUserUseCaseResponse';
-import { FindUserUseCaseRequest } from './dto/UserUseCaseRequest';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from '../../infrastructure/UserRepository';
+import { FindUserByUsernameUseCaseResponse } from './dto/FindUserByUsernameUseCaseResponse';
+import { FindUserByUsernameUseCaseRequest } from './dto/FindUserByUsernameUseCaseRequest';
 import { UseCase } from 'src/shared/core/application/UseCase';
-
-// This should be a real class/interface representing a user entity
 
 @Injectable()
 export class FindUserByUsernameUseCase
-  implements UseCase<FindUserUseCaseRequest, FindUserUseCaseResponse>
+  implements
+    UseCase<FindUserByUsernameUseCaseRequest, FindUserByUsernameUseCaseResponse>
 {
   constructor(
     @Inject(USER_REPOSITORY)
@@ -16,8 +18,8 @@ export class FindUserByUsernameUseCase
   ) {}
 
   async execute(
-    request: FindUserUseCaseRequest,
-  ): Promise<FindUserUseCaseResponse> {
+    request: FindUserByUsernameUseCaseRequest,
+  ): Promise<FindUserByUsernameUseCaseResponse> {
     const user = await this.userRepository.findByUsername(request.username);
 
     if (!user) {

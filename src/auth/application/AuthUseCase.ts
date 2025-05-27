@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { FindUserByUsernameUseCase } from 'src/user/application/FindUserByUsernameUseCase';
+import { FindUserByUsernameUseCase } from 'src/user/application/FindUserByUsernameUseCase/FindUserByUsernameUseCase';
 import { AuthUseCaseRequest } from './dto/AuthUseCaseRequest';
 import { Password } from 'src/user/domain/Password';
 import { JwtService } from '@nestjs/jwt';
