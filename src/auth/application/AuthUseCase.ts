@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { FindUserByUsernameUseCase } from 'src/user/application/FindUserByUsernameUseCase/FindUserByUsernameUseCase';
@@ -49,11 +50,23 @@ export class AuthUseCase {
     };
   }
 
-  setRefreshToken(user: User, res: ExpressResponse) {
+  async setRefreshToken(user: User, res: ExpressResponse) {
     const refreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET');
-    const refreshExpiresIn =
-      this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '14d';
+    const refreshExpiresIn = this.configService.get<string>(
+      'JWT_REFRESH_EXPIRES_IN',
+    );
 
+    if (!refreshSecret) {
+      throw new InternalServerErrorException(
+        'JWT_REFRESH_SECRET 환경변수가 설정되어 있지 않습니다.',
+      );
+    }
+
+    if (!refreshExpiresIn) {
+      throw new InternalServerErrorException(
+        'JWT_REFRESH_EXPIRES_IN 환경변수가 설정되어 있지 않습니다.',
+      );
+    }
     const refreshToken = this.jwtService.sign(
       {
         id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
@@ -65,9 +78,11 @@ export class AuthUseCase {
       },
     );
 
-    res.setHeader('Set-Cookie', [
-      `refreshToken=${refreshToken}; HttpOnly; Path=/; Max-Age=1209600`,
-    ]);
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      path: '/',
+    });
   }
 
   async reissueAccessTokenByRefreshToken(
@@ -76,6 +91,12 @@ export class AuthUseCase {
     try {
       const refreshSecret =
         this.configService.get<string>('JWT_REFRESH_SECRET');
+        
+      if (!refreshSecret) {
+        throw new InternalServerErrorException(
+          'JWT_REFRESH_SECRET 환경변수가 설정되어 있지 않습니다.',
+        );
+      }
 
       const payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: refreshSecret,

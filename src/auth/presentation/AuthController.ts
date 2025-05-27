@@ -42,8 +42,7 @@ export class AuthController {
       if (!res) {
         throw new NotFoundException();
       }
-      this.authUseCase.setRefreshToken(req.user, res);
-
+      const refreshtoken = this.authUseCase.setRefreshToken(req.user, res);
       const accessToken = this.authUseCase.generateAccessToken(req.user);
 
       return accessToken;
