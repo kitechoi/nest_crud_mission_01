@@ -17,7 +17,14 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   static create(props: UserProps, id?: UniqueEntityID): Result<User> {
-    // 검증로직 제약
+
+    if (
+      !props.username ||
+      props.username.length < 5 ||
+      props.username.length > 20
+    ) {
+      return Result.fail('아이디는 6글자 이상, 20자 이하로 입력해야 합니다.');
+    }
 
     return Result.ok(new User(props, id));
   }

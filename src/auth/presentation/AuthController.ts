@@ -1,4 +1,17 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Get, Logger, Req, NotFoundException, Res, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+  Get,
+  Logger,
+  Req,
+  NotFoundException,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthUseCase } from '../application/AuthUseCase';
 import { LocalAuthGuard } from '../LocalAuthGuard';
 import { JwtAuthGuard } from '../JwtAuthGuard';
@@ -11,10 +24,13 @@ export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(private authUseCase: AuthUseCase) {}
 
-  @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('signin')
-  async signIn(@Req() req: Request, @Res({ passthrough: true }) res: ExpressResponse) {
+  async signIn(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: ExpressResponse,
+  ) {
     try {
       if (!req.user) {
         throw new NotFoundException();
