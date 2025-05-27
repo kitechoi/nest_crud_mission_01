@@ -7,9 +7,9 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
-    const secretOrKey = configService.get<string>('JWT_SECRET');
+    const secretOrKey = configService.get<string>('JWT_ACCESS_SECRET');
     if (!secretOrKey) {
-      throw new Error('JWT_SECRET is not defined in .env');
+      throw new Error('JWT_ACCESS_SECRET is not defined in .env');
     }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
