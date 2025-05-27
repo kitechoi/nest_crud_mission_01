@@ -9,9 +9,12 @@ import { CreateArticleUseCase } from './application/CreateArticleUseCase/CreateA
 import { DeleteArticleUseCase } from './application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from './application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateArticleUseCase';
+import { UserModule } from 'src/user/UserModule';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ArticleEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ArticleEntity]),
+    UserModule],
   controllers: [ArticleController],
   providers: [
     CreateArticleUseCase,
@@ -21,7 +24,7 @@ import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateA
     ArticleRepositoryImplMapper,
     {
       provide: ARTICLE_REPOSITORY,
-      useClass: ArticleRepositoryImpl,
+      useClass: ArticleRepositoryImpl
     },
   ],
 })

@@ -1,4 +1,6 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { User } from 'src/user/domain/User';
+import { UserEntitiy } from 'src/user/infrastructure/entity/UserEntity';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('articles')
 export class ArticleEntity extends BaseEntity {
@@ -11,11 +13,9 @@ export class ArticleEntity extends BaseEntity {
   @Column()
   content: string;
 
-  @Column()
-  name: string;
-
-  @Column()
-  password: string;
+  @ManyToOne(() => UserEntitiy)
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntitiy;
 
   @CreateDateColumn()
   created_at: Date;

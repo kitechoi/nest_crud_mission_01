@@ -1,36 +1,38 @@
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { Article } from '../../domain/Article';
-import { Password } from '../../domain/Password';
+import { Password } from '../../../user/domain/Password';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { InternalServerErrorException } from '@nestjs/common';
+import { User } from 'src/user/domain/User';
+import { UserEntitiy } from 'src/user/infrastructure/entity/UserEntity';
 
 export class ArticleRepositoryImplMapper {
-  static toEntity(article: Article): ArticleEntity {
+  static toEntity(article: Article, userIdFromDB: number): ArticleEntity {
     const entity = new ArticleEntity();
+
     if (article.id) {
       entity.id = article.id.toNumber();
     }
+    
     entity.title = article.title;
     entity.content = article.content;
-    entity.name = article.name;
-    entity.password = article.password.getValue();
+
+    const user = new UserEntitiy(); // userrepo를 조회해서 user 정보 가지고 오기 vs new Entity
+    
+    user.id = Number(userIdFromDB);
+    entity.user = user;
+
     return entity;
   }
+  
 
   static toDomain(entity: ArticleEntity): Article {
-    const pwResult = Password.create({ password: entity.password });
-    if (!pwResult.isSuccess) {
-      throw new InternalServerErrorException(
-        `Password 생성 실패: ${pwResult.error}`,
-      );
-    }
 
     const articleResult = Article.create(
       {
         title: entity.title,
         content: entity.content,
-        name: entity.name,
-        password: pwResult.value,
+        userId: entity.user.id,
       },
       UniqueEntityID.create(entity.id),
     );

@@ -1,13 +1,23 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
-import { Password } from '../../domain/Password';
-import { ArticleRepository, ARTICLE_REPOSITORY } from '../../infrastructure/ArticleRepository';
+import { Password } from '../../../user/domain/Password';
+import {
+  ArticleRepository,
+  ARTICLE_REPOSITORY,
+} from '../../infrastructure/ArticleRepository';
 import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
-export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest, UpdateArticleUseCaseResponse>
+export class UpdateArticleUseCase
+  implements UseCase<UpdateArticleUseCaseRequest, UpdateArticleUseCaseResponse>
 {
   constructor(
     @Inject(ARTICLE_REPOSITORY)
@@ -15,12 +25,8 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
   ) {}
 
   async execute(
-    request: UpdateArticleUseCaseRequest): Promise<UpdateArticleUseCaseResponse> {
-
-    const passwordResult = Password.create({ password: request.password});
-    if (!passwordResult.isSuccess) {
-      throw new BadRequestException(passwordResult.error);
-    }
+    request: UpdateArticleUseCaseRequest,
+  ): Promise<UpdateArticleUseCaseResponse> {
 
     const article = await this.articleRepository.findById(request.id);
 
@@ -28,16 +34,19 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
       throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
     }
 
-    if (!article.password.equals(passwordResult.value)) {
-      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
+    if (article.userId !== request.userIdFromDB) {
+      throw new ForbiddenException('작성자만 수정할 수 있습니다.');
     }
 
     const updatedArticle = Article.create(
       {
-        title: typeof request.title !== 'undefined' ? request.title : article.title,
-        content: typeof request.content !== 'undefined' ? request.content : article.content,
-        name: article.name,
-        password: article.password,
+        title:
+          typeof request.title !== 'undefined' ? request.title : article.title,
+        content:
+          typeof request.content !== 'undefined'
+            ? request.content
+            : article.content,
+        userId: article.userId,
       },
       article.id,
     );
@@ -48,6 +57,7 @@ export class UpdateArticleUseCase implements UseCase<UpdateArticleUseCaseRequest
 
     const savedArticle = await this.articleRepository.save(
       updatedArticle.value,
+      request.userIdFromDB,
     );
 
     return {

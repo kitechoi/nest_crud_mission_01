@@ -5,6 +5,7 @@ import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { ArticleRepository } from '../ArticleRepository';
 import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapper';
+import { UserEntitiy } from 'src/user/infrastructure/entity/UserEntity';
 
 @Injectable()
 export class ArticleRepositoryImpl implements ArticleRepository {
@@ -13,20 +14,38 @@ export class ArticleRepositoryImpl implements ArticleRepository {
     private readonly articleEntityRepository: Repository<ArticleEntity>,
   ) {}
 
-  async save(article: Article): Promise<Article> {
+  async save(article: Article, userIdFromDB: number): Promise<Article> {
     const entity = await this.articleEntityRepository.save(
-      ArticleRepositoryImplMapper.toEntity(article),
+      ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
     );
     return ArticleRepositoryImplMapper.toDomain(entity);
   }
 
-  async findAll(limit: number, offset: number): Promise<Article[]> {
-    const entities = await this.articleEntityRepository
+  // async saveTemp(article: Article, userIdFromDB: number): Promise<ArticleEntity> {
+  //   const entity = await this.articleEntityRepository.save(
+  //     ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
+  //   );
+  //   // return ArticleRepositoryImplMapper.toDomain(entity);
+  //   return entity;
+  // }
+
+  async findAll(
+    limit: number,
+    offset: number,
+    username?: string,
+  ): Promise<Article[]> {
+    const queryBuilder = this.articleEntityRepository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
       .orderBy('article.created_at', 'DESC')
       .take(limit)
-      .skip(offset)
-      .getMany();
+      .skip(offset);
+
+    if (username) {
+      queryBuilder.where('user.username = :username', { username });
+    }
+
+    const entities = await queryBuilder.getMany();
 
     return entities.map((entity) =>
       ArticleRepositoryImplMapper.toDomain(entity),
@@ -36,9 +55,10 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   async findById(id: number): Promise<Article | null> {
     const entity = await this.articleEntityRepository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
       .where('article.id = :id', { id })
       .getOne();
-      
+
     return entity ? ArticleRepositoryImplMapper.toDomain(entity) : null;
   }
 

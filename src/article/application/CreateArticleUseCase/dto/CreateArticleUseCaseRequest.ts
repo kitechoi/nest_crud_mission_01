@@ -1,6 +1,6 @@
 export interface CreateArticleUseCaseRequest {
+  username: string;
   title: string;
   content: string;
-  name: string;
-  password: string;
+  userIdFromDB: number;
 }
