@@ -5,9 +5,12 @@ import {
 } from '../../infrastructure/UserRepository';
 import { FindUserByIdUseCaseRequest } from './dto/\bFindUserByIdUseCaseRequest';
 import { FindUserByIdUseCaseResponse } from './dto/FindUserByIdUseCaseResponse';
+import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
-export class FindUserByIdUseCase {
+export class FindUserByIdUseCase
+  implements UseCase<FindUserByIdUseCaseRequest, FindUserByIdUseCaseResponse>
+{
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
