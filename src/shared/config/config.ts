@@ -1,4 +1,4 @@
-function required<T>(key: string, defaultValue?: string): T {
+function getKey<T>(key: string, defaultValue?: string): T {
   if ((typeof process.env[key] === 'undefined' && typeof defaultValue === 'undefined' || process.env[key] === '')) {
     throw new Error('Missing required environment variable: ' + key);
   }
@@ -6,6 +6,5 @@ function required<T>(key: string, defaultValue?: string): T {
 }
 
 export const config = {
-  JWT_ACCESS_SECRET: required<string>('JWT_ACCESS_SECRET'),
-
-}
+  JWT_ACCESS_SECRET: getKey<string>('JWT_ACCESS_SECRET'),
+};
