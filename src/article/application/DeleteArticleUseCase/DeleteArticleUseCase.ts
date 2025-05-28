@@ -13,7 +13,6 @@ import {
 } from '../../infrastructure/ArticleRepository';
 import { DeleteArticleUseCaseResponse } from './dto/DeleteArticleUseCaseResponse';
 import { UseCase } from 'src/shared/core/application/UseCase';
-import { Transactional, TransactionalError } from 'typeorm-transactional';
 
 @Injectable()
 export class DeleteArticleUseCase

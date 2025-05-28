@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
@@ -24,7 +24,7 @@ export class CreateArticleUseCase
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
-
+    console.log('어노테이션 안');
     const articleResult = Article.createNew({
       title: request.title,
       content: request.content,
@@ -38,7 +38,9 @@ export class CreateArticleUseCase
 
     const savedArticle = await this.articleRepository.save(
       articleResult.value, request.userIdFromDB);
-
+      
+    // throw new Error('롤백 테스트용 강제 예외');
+    
     return {
       ok: true,
       article: savedArticle,
