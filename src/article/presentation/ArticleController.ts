@@ -34,7 +34,7 @@ import {
   ArticleControllerUpdateArticleResponse,
   ArticleControllerFineAllArticleResponse,
 } from './dto/ArticleControllerResponse';
-import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
+import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { Request } from 'express';
 import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
 
@@ -60,14 +60,14 @@ export class ArticleController {
       if (!request.user) {
         throw new UnauthorizedException();
       }
-      const { username, userIdFromDB } = request.user;
-
-      console.log('username: ', username, 'userIdFromDB: ', userIdFromDB);
+      const { id, username } = request.user;
+      console.log('username: ', username, 'id: ', id);
+      
       const { ok, article } = await this.createArticleUseCase.execute({
+        userIdFromDB: id,
         username: username,
         title: body.title,
         content: body.content,
-        userIdFromDB: userIdFromDB,
       });
       if (!ok) {
         throw new InternalServerErrorException();
@@ -96,10 +96,10 @@ export class ArticleController {
       if (!request.user) {
         throw new UnauthorizedException();
       }
-      const { username, userIdFromDB } = request.user;
+      const { id, username } = request.user;
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
-        userIdFromDB: userIdFromDB,
+        userIdFromDB: id,
       });
       if (!ok) {
         throw new InternalServerErrorException();
@@ -161,12 +161,12 @@ export class ArticleController {
       if (!request.user) {
         throw new UnauthorizedException();
       }
-      const { username, userIdFromDB } = request.user;
+      const { id, username } = request.user;
       const { ok, article } = await this.updateArticleUseCase.execute({
         id: Number(params.id),
+        userIdFromDB: id,
         title: body.title,
         content: body.content,
-        userIdFromDB: userIdFromDB,
       });
       if (!ok) {
         throw new InternalServerErrorException();

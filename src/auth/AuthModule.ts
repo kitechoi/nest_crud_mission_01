@@ -4,8 +4,8 @@ import { UserModule } from '../user/UserModule';
 import { AuthUseCase } from './application/AuthUseCase';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './LocalStrategy';
-import { JwtStrategy } from './JwtStrategy';
+import { LocalStrategy } from './strategies/LocalStrategy';
+import { JwtStrategy } from './strategies/JwtStrategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
@@ -20,7 +20,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         secret: configService.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
           expiresIn:
-            configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '60s',
+            configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
         },
       }),
     }),
