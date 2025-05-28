@@ -10,4 +10,5 @@ export const AppDataSource = new DataSource({
   database: process.env.MYSQL_DATABASE,
   entities: [__dirname + '/**/entity/*Entity{.ts,.js}'],
   synchronize: true,
+  logging: true,
 });

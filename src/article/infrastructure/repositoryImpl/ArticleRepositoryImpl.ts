@@ -18,6 +18,10 @@ export class ArticleRepositoryImpl implements ArticleRepository {
     const entity = await this.articleEntityRepository.save(
       ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
     );
+    // 트랜잭션 중첩될 때 어떻게
+    // 두 개일 때
+    // 바깥 트랜잭션, typeorm 트랜젹선 어떻게 관리.
+    // 트랜잭션 격리 수준
     return ArticleRepositoryImplMapper.toDomain(entity);
   }
 

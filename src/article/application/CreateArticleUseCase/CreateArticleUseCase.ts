@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
 import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
@@ -20,7 +20,7 @@ export class CreateArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
-  @Transactional()
+  // @Transactional()
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
@@ -35,9 +35,14 @@ export class CreateArticleUseCase
       throw new BadRequestException(articleResult.error);
     }
     console.log('articleResult.value로그: ',articleResult.value);
+    // throw new InternalServerErrorException();
 
     const savedArticle = await this.articleRepository.save(
       articleResult.value, request.userIdFromDB);
+      
+
+      // throw new BadRequestException();
+
 
     return {
       ok: true,

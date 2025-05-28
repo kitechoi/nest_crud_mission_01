@@ -21,7 +21,6 @@ import { UserModule } from 'src/user/UserModule';
     DeleteArticleUseCase,
     FindAllArticleUseCase,
     UpdateArticleUseCase,
-    ArticleRepositoryImplMapper,
     {
       provide: ARTICLE_REPOSITORY,
       useClass: ArticleRepositoryImpl

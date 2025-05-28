@@ -78,10 +78,13 @@ export class AuthUseCase {
       },
     );
 
+    const ms = require('ms');
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'strict',
       path: '/',
+      maxAge: ms(refreshExpiresIn),
     });
   }
 
