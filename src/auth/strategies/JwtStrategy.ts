@@ -9,7 +9,7 @@ import { config } from '../../shared/config/config';
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
 
 export interface Mission02JwtPayload extends JwtPayload {
-  userIdFromDB: number;
+  id: number;
   username: string;
   nickname: string;
 }
@@ -33,8 +33,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     console.log("console.log(payload);",payload);
 
     return {
-      userIdFromDB: payload.id,
-      username: payload.username as string,
+      id: payload.id,
+      username: payload.username,
       nickname: payload.nickname,
     };
   }
