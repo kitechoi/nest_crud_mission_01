@@ -34,7 +34,7 @@ import {
   ArticleControllerUpdateArticleResponse,
   ArticleControllerFineAllArticleResponse,
 } from './dto/ArticleControllerResponse';
-import { JwtAuthGuard } from 'src/auth/JwtAuthGuard';
+import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { Request } from 'express';
 import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
 

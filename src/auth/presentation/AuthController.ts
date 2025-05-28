@@ -13,8 +13,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthUseCase } from '../application/AuthUseCase';
-import { LocalAuthGuard } from '../LocalAuthGuard';
-import { JwtAuthGuard } from '../JwtAuthGuard';
+import { LocalAuthGuard } from '../guards/LocalAuthGuard';
+import { JwtAuthGuard } from '../guards/JwtAuthGuard';
 import { User } from 'src/user/domain/User';
 import { Request } from 'express';
 import { Response as ExpressResponse } from 'express';
@@ -59,7 +59,7 @@ export class AuthController {
     if (!refreshToken) {
       throw new UnauthorizedException('리프레시토큰 없음');
     }
-
+    
     return await this.authUseCase.reissueAccessTokenByRefreshToken(
       refreshToken,
     );
