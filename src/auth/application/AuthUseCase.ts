@@ -41,8 +41,8 @@ export class AuthUseCase {
   async generateAccessToken(user: User): Promise<{ accessToken: string }> {
     const payload = {
       id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
+      username: user.username,
       nickname: user.nickname,
-      sub: user.username,
     };
 
     return {

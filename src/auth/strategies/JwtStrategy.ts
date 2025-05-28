@@ -2,16 +2,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../../shared/config';
+import { config } from '../../shared/config/config';
 
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
 
 export interface Mission02JwtPayload extends JwtPayload {
-  id: number;
+  userIdFromDB: number;
   username: string;
   nickname: string;
 }
@@ -19,33 +17,25 @@ export interface Mission02JwtPayload extends JwtPayload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
-    super();
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: JWT_ACCESS_SECRET,
+      passReqToCallback: true,
+    });
   }
 
-  async validate(request: Request): Promise<Mission02JwtPayload> {
+  async validate(request: Request, payload: Mission02JwtPayload): Promise<Mission02JwtPayload> {
     
-    const token = (request.header('Bearer Token'));
-    if (!token) {
-      throw new UnauthorizedException('MissingToken');
-      
-    }
-    try {
-    jwt.verify(token, JWT_ACCESS_SECRET);
-    const payload = jwt.decode(token) as Mission02JwtPayload;
-
     if (!payload.id || !payload.username || !payload.nickname) {
       throw new UnauthorizedException('InvalidPayload');
     }
+    console.log("console.log(payload);",payload);
 
     return {
-      id: payload.id,
-      username: payload.username,
+      userIdFromDB: payload.id,
+      username: payload.username as string,
       nickname: payload.nickname,
     };
-    }
-    catch (e) {
-      throw e;
-    }
-
   }
 }
