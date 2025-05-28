@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/LocalStrategy';
 import { JwtStrategy } from './strategies/JwtStrategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtWrapper } from './JwtWrapper';
 
 @Module({
   imports: [
@@ -19,14 +20,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn:
-            configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
+          expiresIn: configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
         },
       }),
     }),
   ],
-  providers: [AuthUseCase, LocalStrategy, JwtStrategy],
+  providers: [AuthUseCase, LocalStrategy, JwtStrategy, JwtWrapper],
   controllers: [AuthController],
-  exports: [AuthUseCase],
+  exports: [AuthUseCase, JwtWrapper],
 })
 export class AuthModule {}

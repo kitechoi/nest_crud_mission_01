@@ -12,12 +12,15 @@ import { User } from 'src/user/domain/User';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { ConfigService } from '@nestjs/config';
 import { Response as ExpressResponse } from 'express';
+import { JwtWrapper } from '../JwtWrapper';
+import { config } from '../../shared/config/config';
 
 @Injectable()
 export class AuthUseCase {
   constructor(
     private userUseCase: FindUserByUsernameUseCase,
     private jwtService: JwtService,
+    private jwtWrapper: JwtWrapper,
     private configService: ConfigService,
   ) {}
 
@@ -38,7 +41,7 @@ export class AuthUseCase {
   }
 
   // controller 중 자동 호출
-  async generateAccessToken(user: User): Promise<{ accessToken: string }> {
+  async setAccessToken(user: User): Promise<{ accessToken: string }> {
     const payload = {
       id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
       username: user.username,
@@ -46,45 +49,53 @@ export class AuthUseCase {
     };
 
     return {
-      accessToken: await this.jwtService.signAsync(payload),
+      accessToken: this.jwtWrapper.signAccess( payload )
     };
   }
 
   async setRefreshToken(user: User, res: ExpressResponse) {
-    const refreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET');
-    const refreshExpiresIn = this.configService.get<string>(
-      'JWT_REFRESH_EXPIRES_IN',
-    );
+    const payload = {
+      id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
+      username: user.username,
+      nickname: user.nickname,
+    };
 
-    if (!refreshSecret) {
-      throw new InternalServerErrorException(
-        'JWT_REFRESH_SECRET 환경변수가 설정되어 있지 않습니다.',
-      );
-    }
+    const refreshToken = this.jwtWrapper.signRefresh( payload );
+    // const refreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET');
+    // const refreshExpiresIn = this.configService.get<string>(
+    //   'JWT_REFRESH_EXPIRES_IN',
+    // );
 
-    if (!refreshExpiresIn) {
-      throw new InternalServerErrorException(
-        'JWT_REFRESH_EXPIRES_IN 환경변수가 설정되어 있지 않습니다.',
-      );
-    }
-    const refreshToken = this.jwtService.sign(
-      {
-        id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
-        sub: user.username,
-      },
-      {
-        secret: refreshSecret,
-        expiresIn: refreshExpiresIn,
-      },
-    );
+    // if (!refreshSecret) {
+    //   throw new InternalServerErrorException(
+    //     'JWT_REFRESH_SECRET 환경변수가 설정되어 있지 않습니다.',
+    //   );
+    // }
+
+    // if (!refreshExpiresIn) {
+    //   throw new InternalServerErrorException(
+    //     'JWT_REFRESH_EXPIRES_IN 환경변수가 설정되어 있지 않습니다.',
+    //   );
+    // }
+    // const refreshToken = this.jwtService.sign(
+    //   {
+    //     id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
+    //     sub: user.username,
+    //   },
+    //   {
+    //     secret: refreshSecret,
+    //     expiresIn: refreshExpiresIn,
+    //   },
+    // );
 
     const ms = require('ms');
+    const JWT_REFRESH_EXPIRES_IN = config.JWT_REFRESH_EXPIRES_IN;
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'strict',
       path: '/',
-      maxAge: ms(refreshExpiresIn),
+      maxAge: ms(JWT_REFRESH_EXPIRES_IN),
     });
   }
 
@@ -104,10 +115,10 @@ export class AuthUseCase {
       const payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: refreshSecret,
       });
+      console.log('dfdffdfdfdfdfdf',payload);
+      const user = await this.userUseCase.execute({ username: payload.payload.username });
 
-      const user = await this.userUseCase.execute({ username: payload.sub });
-
-      return this.generateAccessToken(user.user);
+      return this.setAccessToken(user.user);
     } catch {
       throw new UnauthorizedException('리프레시 토큰 오류');
     }
