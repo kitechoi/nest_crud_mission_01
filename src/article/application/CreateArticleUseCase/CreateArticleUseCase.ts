@@ -20,11 +20,11 @@ export class CreateArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
-  // @Transactional()
+  @Transactional()
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
-
+    console.log('어노테이션 안');
     const articleResult = Article.createNew({
       title: request.title,
       content: request.content,
@@ -35,15 +35,12 @@ export class CreateArticleUseCase
       throw new BadRequestException(articleResult.error);
     }
     console.log('articleResult.value로그: ',articleResult.value);
-    // throw new InternalServerErrorException();
 
     const savedArticle = await this.articleRepository.save(
       articleResult.value, request.userIdFromDB);
       
-
-      // throw new BadRequestException();
-
-
+    // throw new Error('롤백 테스트용 강제 예외');
+    
     return {
       ok: true,
       article: savedArticle,
