@@ -46,8 +46,7 @@ export class AuthController {
         throw new NotFoundException();
       }
       const refreshtoken = this.authUseCase.setRefreshToken(req.user, res);
-      const accessToken = this.authUseCase.generateAccessToken(req.user);
-
+      const accessToken = req.user.issueJWTAccessToken();
       return accessToken;
     } catch (error) {
       this.logger.error(JSON.stringify(error));
