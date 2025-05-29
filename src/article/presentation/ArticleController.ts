@@ -16,6 +16,8 @@ import {
   Req,
   NotFoundException,
   UnauthorizedException,
+  UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
@@ -150,6 +152,8 @@ export class ArticleController {
     }
   }
 
+  // @UseInterceptors()
+  // @UseFilters()
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)

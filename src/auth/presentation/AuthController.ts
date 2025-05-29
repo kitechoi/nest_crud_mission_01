@@ -65,6 +65,7 @@ export class AuthController {
   // 1. refresh 토큰이 유효한지 검증 -> 유효하면 그 유저 정보도 유효한지 확인
   // 2. 성공 -> accesstoken 발급
 
+  // 가드 필요 => refresh토큰이 유효한지.
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshAccessToken(
