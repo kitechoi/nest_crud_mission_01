@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   Logger,
   Res,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { UserControllerCreateTokenByUserRequestBody } from './UserControllerRequ
 import { config } from 'src/shared/config/config';
 import { Response } from 'express';
 import { parseDuration } from 'src/shared/utils/ms';
+import { UserControllerCreateTokenByUserResponse } from './UserControllerResponse';
 
 @Controller('users')
 export class UserController {
@@ -23,7 +25,7 @@ export class UserController {
   async login(
     @Body() body: UserControllerCreateTokenByUserRequestBody,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<string> {
+  ): Promise<UserControllerCreateTokenByUserResponse> {
     // 입력받은 유저의 id, pw를 UC에서 검증한다. => 토큰 발급 시 공통로직
     // 엑세스 토큰을 발급한다.
     // 리프레시 토큰을 발급한다 => 엑세스 토큰 발급과 분리하지 않아도 되나.
@@ -34,6 +36,10 @@ export class UserController {
           userPassword: body.userPassword,
         });
 
+      if (!ok) {
+        throw new InternalServerErrorException();
+      }
+
       // 리프레시 토큰은 쿠키에 저장해준다
       response.cookie('refreshToken', refreshToken, {
         httpOnly: true,
@@ -42,7 +48,10 @@ export class UserController {
         maxAge: parseDuration(config.JWT_REFRESH_EXPIRES_IN),
       });
 
-      return accessToken;
+      return {
+        accessToken: accessToken,
+      };
+
     } catch (error) {
       this.logger.error(JSON.stringify(error));
       throw error;

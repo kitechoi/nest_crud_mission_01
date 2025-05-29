@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtWrapper } from 'src/auth/JwtWrapper';
 import { FindUserByUsernameUseCase } from '../FindUserByUsernameUseCase/FindUserByUsernameUseCase';
 import { User } from 'src/user/domain/User';
@@ -16,29 +20,23 @@ export class CreateTokenByUserUseCase {
   async execute(
     request: CreateTokenByUserUseCaseRequest,
   ): Promise<CreateTokenByUserUseCaseResonse> {
-
     // 유저 유효성 검증 -> validateUser 메서드를 어디에 따로 만들면 좋을까.
     const passwordResult = Password.create({ password: request.userPassword });
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }
 
-    const userResponse = await this.findUserByUsernameUseCase.execute({
+    const { user } = await this.findUserByUsernameUseCase.execute({
       username: request.username,
     });
 
-    if (
-      !(
-        userResponse &&
-        userResponse.user.userPassword.equals(passwordResult.value)
-      )
-    ) {
+    if (!(user && user.userPassword.equals(passwordResult.value))) {
       throw new UnauthorizedException();
     }
 
     // 엑세스 토큰 발급
-    const user = userResponse.user;
     const jwtAccessToken = user.issueJWTAccessToken();
+    // 리프레시 토큰 발급
     const jwtRefreshToken = user.issueJWTRefreshToken();
 
     return {
