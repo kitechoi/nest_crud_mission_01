@@ -37,6 +37,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { Request } from 'express';
 import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
+import { MissionJwtPayload } from 'src/auth/strategies/JwtStrategy';
 
 @Controller('articles')
 export class ArticleController {

@@ -8,7 +8,7 @@ import { config } from '../../shared/config/config';
 
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
 
-export interface Mission02JwtPayload extends JwtPayload {
+export interface MissionJwtPayload extends JwtPayload {
   id: number;
   username: string;
   nickname: string;
@@ -25,12 +25,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(request: Request, payload: Mission02JwtPayload): Promise<Mission02JwtPayload> {
-    
+  async validate(
+    request: Request,
+    payload: MissionJwtPayload,
+  ): Promise<MissionJwtPayload> {
     if (!payload.id || !payload.username || !payload.nickname) {
       throw new UnauthorizedException('InvalidPayload');
     }
-    console.log("console.log(payload);",payload);
+    console.log('console.log(payload);', payload);
 
     return {
       id: payload.id,
