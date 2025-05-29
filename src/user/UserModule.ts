@@ -7,16 +7,20 @@ import { UserEntitiy } from './infrastructure/entity/UserEntity';
 import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserByIdUseCase';
 import { FindUserByRefreshTokenUseCase } from './application/FindUserByRefreshTokenUseCase/FindUserByRefreshTokenUseCase';
 import { AuthModule } from 'src/auth/AuthModule';
+import { CreateTokenByUserUseCase } from './application/CreateTokenByUserUseCase/CreateTokenByUserUseCase';
+import { UserController } from './presentation/UserController';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntitiy]),
     forwardRef(() => AuthModule),
   ],
+  controllers: [UserController],
   providers: [
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
     FindUserByRefreshTokenUseCase,
+    CreateTokenByUserUseCase,
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,
@@ -26,6 +30,7 @@ import { AuthModule } from 'src/auth/AuthModule';
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
     FindUserByRefreshTokenUseCase,
+    CreateTokenByUserUseCase,
   ],
 })
 export class UserModule {}

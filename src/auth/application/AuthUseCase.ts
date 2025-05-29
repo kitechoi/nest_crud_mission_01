@@ -19,7 +19,7 @@ import { MissionJwtPayload } from 'src/auth/strategies/JwtStrategy';
 @Injectable()
 export class AuthUseCase {
   constructor(
-    private userUseCase: FindUserByUsernameUseCase,
+    private findUserByUsernameUseCase: FindUserByUsernameUseCase,
     private jwtService: JwtService,
     private jwtWrapper: JwtWrapper,
     private configService: ConfigService,
@@ -32,7 +32,9 @@ export class AuthUseCase {
       throw new BadRequestException(passwordResult.error);
     }
 
-    const user = await this.userUseCase.execute({ username: request.username });
+    const user = await this.findUserByUsernameUseCase.execute({
+      username: request.username,
+    });
 
     if (user && user.user.userPassword.equals(passwordResult.value)) {
       return user.user;
