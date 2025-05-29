@@ -2,6 +2,11 @@ import { Password } from 'src/user/domain/Password';
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { Result } from 'src/shared/core/domain/Result';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import * as jwt from 'jsonwebtoken';
+import { config } from 'src/shared/config/config';
+
+const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
+const JWT_REFRESH_SECRET = config.JWT_REFRESH_SECRET;
 
 export interface UserProps {
   username: string;
@@ -17,7 +22,6 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   static create(props: UserProps, id?: UniqueEntityID): Result<User> {
-
     if (
       !props.username ||
       props.username.length < 5 ||
@@ -44,4 +48,31 @@ export class User extends AggregateRoot<UserProps> {
   get nickname(): string {
     return this.props.nickname;
   }
+
+  // JWT Accesstoken 생성 로직을 UC가 아닌 USER 도메인이 갖는다
+  // 도메인은 인프라의 의존성을 주입 받으면 안 됨(JwtService 의 signAsync 같은 걸 쓸 수 없음)
+  issueJWTAccessToken(): string {
+    return jwt.sign(
+      {
+        id: this.id.toNumber(),
+        username: this.props.username,
+        nickname: this.props.nickname,
+      },
+      JWT_ACCESS_SECRET,
+      { expiresIn: '1d' }, // 하드코딩 수정 요망.
+    );
+  }
+
+  issueJWTRefreshToken(): string {
+    return jwt.sign(
+      {
+        id: this.id.toNumber(),
+        username: this.props.username,
+        nickname: this.props.nickname,
+      },
+      JWT_REFRESH_SECRET,
+      { expiresIn: '14d' }, // 하드코딩 수정 요망.
+    );
+  }
 }
+
