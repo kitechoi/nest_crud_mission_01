@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Post } from '@nestjs/common';
-import { CreateTokenByUsernameUseCase } from '../application/CreateTokenByUsernameUseCase/CreateTokenByUsernameUseCase';
+import { CreateLoginUseCase } from '../application/CreateLoginUseCase/CreateLoginUseCase';
 import { UserControllerCreateTokenByUserRequestBody } from './UserControllerRequest';
 import { config } from 'src/shared/config/config';
 import { Response } from 'express';
@@ -25,7 +25,7 @@ import { FindUserByIdUseCase } from '../application/FindUserByIdUseCase/FindUser
 export class UserController {
   private readonly logger = new Logger(UserController.name);
   constructor(
-    private createTokenByUserUseCase: CreateTokenByUsernameUseCase,
+    private createLoginUseCase: CreateLoginUseCase,
     private findUserByIdUseCase: FindUserByIdUseCase,
   ) {}
 
@@ -35,12 +35,12 @@ export class UserController {
     @Body() body: UserControllerCreateTokenByUserRequestBody,
     @Res({ passthrough: true }) response: Response,
   ): Promise<UserControllerCreateTokenByUserResponse> {
-    // 입력받은 유저의 id, pw를 UC에서 검증한다. => 토큰 발급 시 공통로직
-    // 엑세스 토큰을 발급한다.
-    // 리프레시 토큰을 발급한다 => 엑세스 토큰 발급과 분리하지 않아도 되나.
+    // 1. 입력받은 유저의 username, pw를 UC에서 검증한다
+    // 2. 엑세스 토큰을 발급한다
+    // 3. 리프레시 토큰을 발급한다
     try {
       const { ok, accessToken, refreshToken } =
-        await this.createTokenByUserUseCase.execute({
+        await this.createLoginUseCase.execute({
           username: body.username,
           userPassword: body.userPassword,
         });
@@ -49,7 +49,7 @@ export class UserController {
         throw new InternalServerErrorException();
       }
 
-      // 리프레시 토큰은 쿠키에 저장해준다
+      // 4. 리프레시 토큰은 쿠키에 저장한다
       response.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'strict',
@@ -66,9 +66,9 @@ export class UserController {
     }
   }
 
-  // 1. JwtRefreshGuard로 refresh 토큰이 유효한지 검증
-  // 2. 리프레시 토큰이 유효하면 그 DB에 접근하여 해당 유저가 유효한지 확인
-  // 3. accesstoken 발급
+  // 1. JwtRefreshGuard로 refresh 토큰이 유효한지 검증한다
+  // 2. 리프레시 토큰이 유효하면 그 DB에 접근하여 해당 유저가 유효한지 확인한다
+  // 3. accesstoken 발급한다
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')

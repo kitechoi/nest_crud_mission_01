@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntitiy } from './infrastructure/entity/UserEntity';
 import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserByIdUseCase';
 import { AuthModule } from 'src/auth/AuthModule';
-import { CreateTokenByUsernameUseCase } from './application/CreateTokenByUsernameUseCase/CreateTokenByUsernameUseCase';
+import { CreateLoginUseCase } from './application/CreateLoginUseCase/CreateLoginUseCase';
 import { UserController } from './presentation/UserController';
 
 @Module({
@@ -18,16 +18,12 @@ import { UserController } from './presentation/UserController';
   providers: [
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
-    CreateTokenByUsernameUseCase,
+    CreateLoginUseCase,
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,
     },
   ],
-  exports: [
-    FindUserByUsernameUseCase,
-    FindUserByIdUseCase,
-    CreateTokenByUsernameUseCase,
-  ],
+  exports: [FindUserByUsernameUseCase, FindUserByIdUseCase, CreateLoginUseCase],
 })
 export class UserModule {}
