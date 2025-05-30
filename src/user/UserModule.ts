@@ -5,7 +5,6 @@ import { UserRepositoryImpl } from './infrastructure/repositoryImpl/UserReposito
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntitiy } from './infrastructure/entity/UserEntity';
 import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserByIdUseCase';
-import { FindUserByRefreshTokenUseCase } from './application/FindUserByRefreshTokenUseCase/FindUserByRefreshTokenUseCase';
 import { AuthModule } from 'src/auth/AuthModule';
 import { CreateTokenByUsernameUseCase } from './application/CreateTokenByUsernameUseCase/CreateTokenByUsernameUseCase';
 import { UserController } from './presentation/UserController';
@@ -19,7 +18,6 @@ import { UserController } from './presentation/UserController';
   providers: [
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
-    FindUserByRefreshTokenUseCase,
     CreateTokenByUsernameUseCase,
     {
       provide: USER_REPOSITORY,
@@ -29,7 +27,6 @@ import { UserController } from './presentation/UserController';
   exports: [
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
-    FindUserByRefreshTokenUseCase,
     CreateTokenByUsernameUseCase,
   ],
 })

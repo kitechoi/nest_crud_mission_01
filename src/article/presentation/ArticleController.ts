@@ -14,10 +14,7 @@ import {
   Logger,
   UseGuards,
   Req,
-  NotFoundException,
   UnauthorizedException,
-  UseInterceptors,
-  UseFilters,
 } from '@nestjs/common';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
@@ -39,7 +36,6 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { Request } from 'express';
 import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
-import { MissionJwtPayload } from 'src/auth/strategies/JwtStrategy';
 
 @Controller('articles')
 export class ArticleController {
