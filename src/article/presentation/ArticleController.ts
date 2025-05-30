@@ -61,7 +61,7 @@ export class ArticleController {
       }
       const { id, username } = request.user;
       console.log('username: ', username, 'id: ', id);
-      
+
       const { ok, article } = await this.createArticleUseCase.execute({
         userIdFromDB: id,
         username: username,

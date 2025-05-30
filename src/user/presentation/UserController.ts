@@ -20,6 +20,7 @@ import { UserControllerCreateTokenByUserResponse } from './UserControllerRespons
 import { Request } from 'express';
 import { JwtRefreshGuard } from 'src/auth/guards/JwtRefreshGuard';
 import { FindUserByIdUseCase } from '../application/FindUserByIdUseCase/FindUserByIdUseCase';
+import { CreateReissuedAccessTokenUseCase } from '../application/CreateReissuedAccessTokenUseCase/CreateReissuedAccessTokenUseCase';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +28,7 @@ export class UserController {
   constructor(
     private createLoginUseCase: CreateLoginUseCase,
     private findUserByIdUseCase: FindUserByIdUseCase,
+    private createReissuedAccessTokenUseCase: CreateReissuedAccessTokenUseCase,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -69,6 +71,8 @@ export class UserController {
   // 1. JwtRefreshGuard로 refresh 토큰이 유효한지 검증한다
   // 2. 리프레시 토큰이 유효하면 그 DB에 접근하여 해당 유저가 유효한지 확인한다
   // 3. accesstoken 발급한다
+    // CreateAccessTokenByRefreshTokenUseCase
+    // CreateReissuedAccessTokenUseCase
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
@@ -80,19 +84,13 @@ export class UserController {
       if (!request.user) {
         throw new UnauthorizedException();
       }
-
       const { id } = request.user;
 
-      const { ok, user } = await this.findUserByIdUseCase.execute({ id });
-      if (!ok) {
-        throw new InternalServerErrorException();
-      }
-      if (user === null) {
-        throw new InternalServerErrorException('User not found');
-      }
+      const { accessToken } =
+        await this.createReissuedAccessTokenUseCase.execute({ id: id });
 
       return {
-        accessToken: user.issueJWTAccessToken(),
+        accessToken: accessToken,
       };
     } catch (error) {
       this.logger.error(JSON.stringify(error));

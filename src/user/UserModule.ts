@@ -8,6 +8,7 @@ import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserB
 import { AuthModule } from 'src/auth/AuthModule';
 import { CreateLoginUseCase } from './application/CreateLoginUseCase/CreateLoginUseCase';
 import { UserController } from './presentation/UserController';
+import { CreateReissuedAccessTokenUseCase } from './application/CreateReissuedAccessTokenUseCase/CreateReissuedAccessTokenUseCase';
 
 @Module({
   imports: [
@@ -19,11 +20,17 @@ import { UserController } from './presentation/UserController';
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
     CreateLoginUseCase,
+    CreateReissuedAccessTokenUseCase,
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,
     },
   ],
-  exports: [FindUserByUsernameUseCase, FindUserByIdUseCase, CreateLoginUseCase],
+  exports: [
+    FindUserByUsernameUseCase,
+    FindUserByIdUseCase,
+    CreateLoginUseCase,
+    CreateReissuedAccessTokenUseCase,
+  ],
 })
 export class UserModule {}

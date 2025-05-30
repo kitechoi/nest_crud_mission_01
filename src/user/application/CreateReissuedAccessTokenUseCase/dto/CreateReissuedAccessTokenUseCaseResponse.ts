@@ -1,6 +1,5 @@
 import { CoreResponse } from 'src/shared/core/application/CoreResponse';
 
-export interface CreateLoginUseCaseResponse extends CoreResponse {
+export interface CreateReissuedAccessTokenUseCaseResponse extends CoreResponse {
   accessToken: string;
-  refreshToken: string;
 }
