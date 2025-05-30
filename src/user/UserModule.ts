@@ -7,7 +7,7 @@ import { UserEntitiy } from './infrastructure/entity/UserEntity';
 import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserByIdUseCase';
 import { FindUserByRefreshTokenUseCase } from './application/FindUserByRefreshTokenUseCase/FindUserByRefreshTokenUseCase';
 import { AuthModule } from 'src/auth/AuthModule';
-import { CreateTokenByUserUseCase } from './application/CreateTokenByUserUseCase/CreateTokenByUserUseCase';
+import { CreateTokenByUsernameUseCase } from './application/CreateTokenByUsernameUseCase/CreateTokenByUsernameUseCase';
 import { UserController } from './presentation/UserController';
 
 @Module({
@@ -20,7 +20,7 @@ import { UserController } from './presentation/UserController';
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
     FindUserByRefreshTokenUseCase,
-    CreateTokenByUserUseCase,
+    CreateTokenByUsernameUseCase,
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,
@@ -30,7 +30,7 @@ import { UserController } from './presentation/UserController';
     FindUserByUsernameUseCase,
     FindUserByIdUseCase,
     FindUserByRefreshTokenUseCase,
-    CreateTokenByUserUseCase,
+    CreateTokenByUsernameUseCase,
   ],
 })
 export class UserModule {}

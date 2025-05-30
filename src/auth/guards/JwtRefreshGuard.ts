@@ -38,7 +38,7 @@ export class JwtRefreshGuard implements CanActivate {
 
       request['user'] = payload;
       return true;
-    } catch (e) {
+    } catch (error) {
       throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
     }
   }

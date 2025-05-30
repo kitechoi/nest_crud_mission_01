@@ -70,7 +70,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async refreshAccessToken(
     @Req() req: Request,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<string> {
     const refreshToken = req.cookies['refreshToken'];
     if (!refreshToken) {
       throw new UnauthorizedException('리프레시 토큰이 없습니다.');

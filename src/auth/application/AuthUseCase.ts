@@ -44,16 +44,14 @@ export class AuthUseCase {
   }
 
   // controller 중 자동 호출
-  async issueAccessToken(user: User): Promise<{ accessToken: string }> {
+  async issueAccessToken(user: User): Promise<string> {
     const payload: MissionJwtPayload = {
       id: user.id instanceof UniqueEntityID ? user.id.toNumber() : user.id,
       username: user.username,
       nickname: user.nickname,
     };
 
-    return {
-      accessToken: this.jwtWrapper.signAccess(payload),
-    };
+    return this.jwtWrapper.signAccess(payload);
   }
 
   async issueRefreshToken(user: User): Promise<string> {

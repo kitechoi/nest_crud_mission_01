@@ -5,14 +5,13 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
   Req,
   Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Post } from '@nestjs/common';
-import { CreateTokenByUserUseCase } from '../application/CreateTokenByUserUseCase/CreateTokenByUserUseCase';
+import { CreateTokenByUsernameUseCase } from '../application/CreateTokenByUsernameUseCase/CreateTokenByUsernameUseCase';
 import { UserControllerCreateTokenByUserRequestBody } from './UserControllerRequest';
 import { config } from 'src/shared/config/config';
 import { Response } from 'express';
@@ -20,12 +19,15 @@ import { parseDuration } from 'src/shared/utils/ms';
 import { UserControllerCreateTokenByUserResponse } from './UserControllerResponse';
 import { Request } from 'express';
 import { JwtRefreshGuard } from 'src/auth/guards/JwtRefreshGuard';
-import { User } from '../domain/User';
+import { FindUserByIdUseCase } from '../application/FindUserByIdUseCase/FindUserByIdUseCase';
 
 @Controller('users')
 export class UserController {
   private readonly logger = new Logger(UserController.name);
-  constructor(private createTokenByUserUseCase: CreateTokenByUserUseCase) {}
+  constructor(
+    private createTokenByUserUseCase: CreateTokenByUsernameUseCase,
+    private findUserByIdUseCase: FindUserByIdUseCase,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -64,33 +66,37 @@ export class UserController {
     }
   }
 
-  // 가드 필요 => refresh토큰이 유효한지.
-  // 1. refresh 토큰이 유효한지 검증 -> 유효하면 그 유저 정보도 유효한지 확인
-  // 2. 성공 -> accesstoken 발급
+  // 1. JwtRefreshGuard로 refresh 토큰이 유효한지 검증
+  // 2. 리프레시 토큰이 유효하면 그 DB에 접근하여 해당 유저가 유효한지 확인
+  // 3. accesstoken 발급
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshAccessToken(
-    @Req() req: Request,
+    @Req() request: Request,
   ): Promise<UserControllerCreateTokenByUserResponse> {
     try {
-      if (!req.user) {
-        throw new NotFoundException();
+      if (!request.user) {
+        throw new UnauthorizedException();
       }
-      if (!(req.user instanceof User)) {
-        throw new NotFoundException();
+
+      const { id } = request.user;
+
+      const { ok, user } = await this.findUserByIdUseCase.execute({ id });
+      if (!ok) {
+        throw new InternalServerErrorException();
       }
-      // req의 user는 user 도메인이 아닌, 일부 정보만 포함된 global 유저정보일 뿐.
-      // 따라서 바로issueJWTAccessToken하면 안됨.
-      const a = req.user.issueJWTAccessToken();
+      if (user === null) {
+        throw new InternalServerErrorException('User not found');
+      }
 
       return {
-        accessToken: a,
+        accessToken: user.issueJWTAccessToken(),
       };
     } catch (error) {
-    this.logger.error(JSON.stringify(error));
-    throw error;
+      this.logger.error(JSON.stringify(error));
+      throw error;
+    }
   }
-}
 }
