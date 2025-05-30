@@ -1,17 +1,17 @@
-// JwtStrategy.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
 import { config } from '../../shared/config/config';
 
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
 
-export interface MissionJwtPayload extends JwtPayload {
+export interface JwtAccessPayload {
   id: number;
   username: string;
   nickname: string;
+  iat: number;
+  exp: number;
 }
 
 @Injectable()
@@ -27,17 +27,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(
     request: Request,
-    payload: MissionJwtPayload,
-  ): Promise<MissionJwtPayload> {
-    if (!payload.id || !payload.username || !payload.nickname) {
-      throw new UnauthorizedException('InvalidPayload');
-    }
-    console.log('console.log(payload);', payload);
+    payload: JwtAccessPayload,
+  ): Promise<JwtAccessPayload> {
+    const { id, username, nickname } = payload;
 
-    return {
-      id: payload.id,
-      username: payload.username,
-      nickname: payload.nickname,
-    };
+    if (!id || !username || !nickname) {
+      throw new UnauthorizedException('Invalid payload structure');
+    }
+    return payload;
   }
 }

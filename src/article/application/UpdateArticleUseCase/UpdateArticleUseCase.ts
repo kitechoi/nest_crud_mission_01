@@ -9,7 +9,6 @@ import {
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
 import { Article } from '../../domain/Article';
-import { Password } from '../../../user/domain/Password';
 import {
   ArticleRepository,
   ARTICLE_REPOSITORY,

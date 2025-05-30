@@ -6,7 +6,6 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { DeleteArticleUseCaseRequest } from './dto/DeleteArticleUseCaseRequest';
-import { Password } from '../../../user/domain/Password';
 import {
   ArticleRepository,
   ARTICLE_REPOSITORY,
