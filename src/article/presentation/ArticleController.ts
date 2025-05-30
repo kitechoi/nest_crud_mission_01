@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -22,7 +21,6 @@ import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/Find
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
 import {
   ArticleControllerCreateArticleRequestBody,
-  ArticleControllerDeleteArticleRequestBody,
   ArticleControllerDeleteArticleRequestParam,
   ArticleControllerFindAllArticleRequestQuery,
   ArticleControllerUpdateArticleRequestBody,
@@ -48,9 +46,9 @@ export class ArticleController {
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
   async createArticle(
     @Req() request: Request,
     @Body() body: ArticleControllerCreateArticleRequestBody,
@@ -60,7 +58,6 @@ export class ArticleController {
         throw new UnauthorizedException();
       }
       const { id, username } = request.user;
-      console.log('username: ', username, 'id: ', id);
 
       const { ok, article } = await this.createArticleUseCase.execute({
         userIdFromDB: id,
@@ -84,9 +81,9 @@ export class ArticleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
   async deleteArticle(
     @Param() params: ArticleControllerDeleteArticleRequestParam,
     @Req() request: Request,
@@ -111,6 +108,7 @@ export class ArticleController {
     }
   }
 
+  // findAllArticleUseCase 안에서 User도 같이 반환해주는 건?
   @Get()
   @HttpCode(HttpStatus.OK)
   async getArticle(
@@ -150,9 +148,9 @@ export class ArticleController {
 
   // @UseInterceptors()
   // @UseFilters()
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
   async updateArticle(
     @Param() params: ArticleControllerUpdateArticleRequestParam,
     @Req() request: Request,

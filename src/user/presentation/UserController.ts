@@ -32,8 +32,8 @@ export class UserController {
     private createReissuedAccessTokenUseCase: CreateReissuedAccessTokenUseCase,
   ) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(
     @Body() body: UserControllerCreateLoginRequestBody,
     @Res({ passthrough: true }) response: Response,
@@ -74,10 +74,9 @@ export class UserController {
   // 3. accesstoken 발급한다
   // CreateAccessTokenByRefreshTokenUseCase
   // CreateReissuedAccessTokenUseCase
-
-  @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtRefreshGuard)
   async refreshAccessToken(
     @Req() request: Request,
   ): Promise<UserControllerCreateReissuedAccessTokenResponse> {
