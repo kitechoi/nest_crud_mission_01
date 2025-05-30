@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
@@ -14,6 +15,7 @@ import {
   ARTICLE_REPOSITORY,
 } from '../../infrastructure/ArticleRepository';
 import { UseCase } from 'src/shared/core/application/UseCase';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class UpdateArticleUseCase
@@ -24,10 +26,10 @@ export class UpdateArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
+  @Transactional()
   async execute(
     request: UpdateArticleUseCaseRequest,
   ): Promise<UpdateArticleUseCaseResponse> {
-
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {

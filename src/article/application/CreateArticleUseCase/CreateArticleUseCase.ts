@@ -27,18 +27,14 @@ export class CreateArticleUseCase
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
-    const articleResult = Article.createNew({
+    const article = Article.createNew({
       title: request.title,
       content: request.content,
       userId: request.userIdFromDB,
-    });
-
-    if (!articleResult.isSuccess) {
-      throw new BadRequestException(articleResult.error);
-    }
+    }).value;
 
     const savedArticle = await this.articleRepository.save(
-      articleResult.value,
+      article,
       request.userIdFromDB,
     );
 

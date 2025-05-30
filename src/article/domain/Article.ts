@@ -17,7 +17,7 @@ export class Article extends AggregateRoot<ArticleProps> {
   }
 
   static create(props: ArticleProps, id?: UniqueEntityID): Result<Article> {
-    if (!props.title || props.title.length > 50) {
+    if (!props.title || props.title.length > 5) {
       return Result.fail('제목은 50자 이하로 입력해야 합니다.');
     }
 

@@ -1,5 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { UserModule } from '../user/UserModule';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/JwtStrategy';
@@ -7,7 +6,6 @@ import { config } from 'src/shared/config/config';
 
 @Module({
   imports: [
-    forwardRef(() => UserModule), // 순환참조?
     PassportModule,
     JwtModule.registerAsync({
       global: true,
