@@ -71,12 +71,12 @@ export class ArticleController {
       if (!ok) {
         throw new InternalServerErrorException();
       }
-      console.log(article);
+
       return {
         id: article.id.toNumber(),
         title: article.title,
         content: article.content,
-        username: username, // 유저 문자 아이디
+        username: username,
       };
     } catch (error) {
       this.logger.error(JSON.stringify(error));
@@ -95,7 +95,7 @@ export class ArticleController {
       if (!request.user) {
         throw new UnauthorizedException();
       }
-      const { id, username } = request.user;
+      const { id } = request.user;
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
         userIdFromDB: id,

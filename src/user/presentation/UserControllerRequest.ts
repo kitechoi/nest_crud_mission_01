@@ -1,4 +1,4 @@
-export class UserControllerCreateTokenByUserRequestBody {
+export class UserControllerCreateLoginRequestBody {
   username: string;
   userPassword: string;
 }

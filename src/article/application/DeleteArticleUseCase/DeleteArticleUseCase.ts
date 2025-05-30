@@ -23,7 +23,6 @@ export class DeleteArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
-  // @Transactional()
   async execute(
     request: DeleteArticleUseCaseRequest,
   ): Promise<DeleteArticleUseCaseResponse> {

@@ -12,14 +12,16 @@ import {
 } from '@nestjs/common';
 import { Post } from '@nestjs/common';
 import { CreateLoginUseCase } from '../application/CreateLoginUseCase/CreateLoginUseCase';
-import { UserControllerCreateTokenByUserRequestBody } from './UserControllerRequest';
+import { UserControllerCreateLoginRequestBody } from './UserControllerRequest';
 import { config } from 'src/shared/config/config';
 import { Response } from 'express';
 import { parseDuration } from 'src/shared/utils/ms';
-import { UserControllerCreateTokenByUserResponse } from './UserControllerResponse';
+import {
+  UserControllerCreateLoginResponse,
+  UserControllerCreateReissuedAccessTokenResponse,
+} from './UserControllerResponse';
 import { Request } from 'express';
 import { JwtRefreshGuard } from 'src/auth/guards/JwtRefreshGuard';
-import { FindUserByIdUseCase } from '../application/FindUserByIdUseCase/FindUserByIdUseCase';
 import { CreateReissuedAccessTokenUseCase } from '../application/CreateReissuedAccessTokenUseCase/CreateReissuedAccessTokenUseCase';
 
 @Controller('users')
@@ -27,16 +29,15 @@ export class UserController {
   private readonly logger = new Logger(UserController.name);
   constructor(
     private createLoginUseCase: CreateLoginUseCase,
-    private findUserByIdUseCase: FindUserByIdUseCase,
     private createReissuedAccessTokenUseCase: CreateReissuedAccessTokenUseCase,
   ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(
-    @Body() body: UserControllerCreateTokenByUserRequestBody,
+    @Body() body: UserControllerCreateLoginRequestBody,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<UserControllerCreateTokenByUserResponse> {
+  ): Promise<UserControllerCreateLoginResponse> {
     // 1. 입력받은 유저의 username, pw를 UC에서 검증한다
     // 2. 엑세스 토큰을 발급한다
     // 3. 리프레시 토큰을 발급한다
@@ -71,15 +72,15 @@ export class UserController {
   // 1. JwtRefreshGuard로 refresh 토큰이 유효한지 검증한다
   // 2. 리프레시 토큰이 유효하면 그 DB에 접근하여 해당 유저가 유효한지 확인한다
   // 3. accesstoken 발급한다
-    // CreateAccessTokenByRefreshTokenUseCase
-    // CreateReissuedAccessTokenUseCase
+  // CreateAccessTokenByRefreshTokenUseCase
+  // CreateReissuedAccessTokenUseCase
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshAccessToken(
     @Req() request: Request,
-  ): Promise<UserControllerCreateTokenByUserResponse> {
+  ): Promise<UserControllerCreateReissuedAccessTokenResponse> {
     try {
       if (!request.user) {
         throw new UnauthorizedException();

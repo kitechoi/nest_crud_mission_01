@@ -1,3 +1,6 @@
-export class UserControllerCreateTokenByUserResponse {
-  accessToken: string
+export class UserControllerCreateLoginResponse {
+  accessToken: string;
+}
+export class UserControllerCreateReissuedAccessTokenResponse {
+  accessToken: string;
 }

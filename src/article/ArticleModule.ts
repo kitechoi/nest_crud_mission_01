@@ -11,9 +11,7 @@ import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateA
 import { UserModule } from 'src/user/UserModule';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ArticleEntity]),
-    UserModule],
+  imports: [TypeOrmModule.forFeature([ArticleEntity]), UserModule],
   controllers: [ArticleController],
   providers: [
     CreateArticleUseCase,
@@ -22,7 +20,7 @@ import { UserModule } from 'src/user/UserModule';
     UpdateArticleUseCase,
     {
       provide: ARTICLE_REPOSITORY,
-      useClass: ArticleRepositoryImpl
+      useClass: ArticleRepositoryImpl,
     },
   ],
 })
