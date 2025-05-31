@@ -23,7 +23,7 @@ export class FindUserByUsernameUseCase
     const user = await this.userRepository.findByUsername(request.username);
 
     if (!user) {
-      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('User not found');
     }
 
     return {

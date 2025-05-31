@@ -1,6 +1,6 @@
-import { Result } from '../../shared/core/domain/Result';
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import { Result } from '../../shared/core/domain/Result';
 
 export interface ArticleProps {
   title: string;
@@ -15,15 +15,15 @@ export class Article extends AggregateRoot<ArticleProps> {
 
   static create(props: ArticleProps, id?: UniqueEntityID): Result<Article> {
     if (!props.title || props.title.length > 50) {
-      return Result.fail('제목은 50자 이하로 입력해야 합니다.');
+      return Result.fail('Title must be 50 characters or fewer');
     }
 
     if (!props.content || props.content.length > 2000) {
-      return Result.fail('본문은 2000자 이하로 입력해야 합니다.');
+      return Result.fail('Content must be 2000 characters or fewer');
     }
 
     if (!props.userId) {
-      return Result.fail('작성자가 확인돼야 합니다.');
+      return Result.fail('User ID is required to create an article');
     }
 
     return Result.ok(new Article(props, id));

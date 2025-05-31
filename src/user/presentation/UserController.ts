@@ -82,7 +82,7 @@ export class UserController {
   ): Promise<UserControllerCreateReissuedAccessTokenResponse> {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
       const { id } = request.user;
 

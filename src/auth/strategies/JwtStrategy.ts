@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const { id, username, nickname } = payload;
 
     if (!id || !username || !nickname) {
-      throw new UnauthorizedException('Invalid payload structure');
+      throw new UnauthorizedException('Invalid payload');
     }
     return payload;
   }

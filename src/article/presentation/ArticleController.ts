@@ -55,7 +55,7 @@ export class ArticleController {
   ): Promise<ArticleControllerCreateArticleResponse> {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
       const { id, username } = request.user;
 
@@ -90,7 +90,7 @@ export class ArticleController {
   ) {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
       const { id } = request.user;
       const { ok } = await this.deleteArticleUseCase.execute({
@@ -158,7 +158,7 @@ export class ArticleController {
   ): Promise<ArticleControllerUpdateArticleResponse> {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
       const { id, username } = request.user;
       const { ok, article } = await this.updateArticleUseCase.execute({

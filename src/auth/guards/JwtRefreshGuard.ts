@@ -25,7 +25,7 @@ export class JwtRefreshGuard implements CanActivate {
     const refreshToken = request.cookies?.refreshToken;
 
     if (!refreshToken) {
-      throw new UnauthorizedException('리프레시 토큰이 없습니다.');
+      throw new UnauthorizedException('Missing RefreshToken');
     }
 
     try {
@@ -39,7 +39,7 @@ export class JwtRefreshGuard implements CanActivate {
       request['user'] = payload;
       return true;
     } catch (error) {
-      throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+      throw new UnauthorizedException('Invalid RefreshToken');
     }
   }
 }

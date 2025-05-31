@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { FindUserByIdUseCase } from '../FindUserByIdUseCase/FindUserByIdUseCase';
 import { CreateReissuedAccessTokenUseCaseRequest } from './dto/CreateReissuedAccessTokenUseCaseRequest';
 import { CreateReissuedAccessTokenUseCaseResponse } from './dto/CreateReissuedAccessTokenUseCaseResponse';
@@ -25,7 +29,7 @@ export class CreateReissuedAccessTokenUseCase
       throw new InternalServerErrorException();
     }
     if (user === null) {
-      throw new InternalServerErrorException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const accessToken = user.issueJWTAccessToken();

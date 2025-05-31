@@ -31,11 +31,13 @@ export class UpdateArticleUseCase
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
-      throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
+      throw new NotFoundException('Article not found');
     }
 
     if (article.userId !== request.userIdFromDB) {
-      throw new ForbiddenException('작성자만 수정할 수 있습니다.');
+      throw new ForbiddenException(
+        'Only the author of the article can delete it',
+      );
     }
 
     const updatedArticle = Article.create(

@@ -21,7 +21,7 @@ export class FindUserByIdUseCase
   ): Promise<FindUserByIdUseCaseResponse> {
     const user = await this.userRepository.findById(request.id);
     if (!user) {
-      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('User not found');
     }
 
     return {

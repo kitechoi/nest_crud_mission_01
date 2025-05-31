@@ -35,7 +35,7 @@ export class ArticleRepositoryImplMapper {
 
     if (!articleResult.isSuccess) {
       throw new InternalServerErrorException(
-        `Article 생성 실패: ${articleResult.error}`,
+        `Failed to create article: ${articleResult.error}`,
       );
     }
 
