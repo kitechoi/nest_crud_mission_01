@@ -1,10 +1,8 @@
-import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
-import { Article } from '../../domain/Article';
-import { Password } from '../../../user/domain/Password';
-import { ArticleEntity } from '../entity/ArticleEntity';
 import { InternalServerErrorException } from '@nestjs/common';
-import { User } from 'src/user/domain/User';
+import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { UserEntitiy } from 'src/user/infrastructure/entity/UserEntity';
+import { Article } from '../../domain/Article';
+import { ArticleEntity } from '../entity/ArticleEntity';
 
 export class ArticleRepositoryImplMapper {
   static toEntity(article: Article, userIdFromDB: number): ArticleEntity {
