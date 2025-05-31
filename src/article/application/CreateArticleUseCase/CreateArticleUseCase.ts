@@ -1,7 +1,4 @@
-import {
-  Inject,
-  Injectable
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UseCase } from 'src/shared/core/application/UseCase';
 import { Transactional } from 'typeorm-transactional';
 import { Article } from '../../domain/Article';

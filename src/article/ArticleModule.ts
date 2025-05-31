@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from 'src/user/UserModule';
 import { ArticleEntity } from './infrastructure/entity/ArticleEntity';
 import { ARTICLE_REPOSITORY } from './infrastructure/ArticleRepository';
 import { ArticleRepositoryImpl } from './infrastructure/repositoryImpl/ArticleRepositoryImpl';
@@ -8,7 +9,6 @@ import { CreateArticleUseCase } from './application/CreateArticleUseCase/CreateA
 import { DeleteArticleUseCase } from './application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from './application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from './application/UpdateArticleUseCase/UpdateArticleUseCase';
-import { UserModule } from 'src/user/UserModule';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ArticleEntity]), UserModule],

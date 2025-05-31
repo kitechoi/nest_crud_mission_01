@@ -1,3 +1,3 @@
 export interface CreateReissuedAccessTokenUseCaseRequest {
-  id: number
+  id: number;
 }

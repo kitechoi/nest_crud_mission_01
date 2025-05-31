@@ -1,9 +1,9 @@
-import { Password } from 'src/user/domain/Password';
+import * as jwt from 'jsonwebtoken';
+import { config } from 'src/shared/config/config';
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { Result } from 'src/shared/core/domain/Result';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
-import * as jwt from 'jsonwebtoken';
-import { config } from 'src/shared/config/config';
+import { Password } from 'src/user/domain/Password';
 
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
 const JWT_REFRESH_SECRET = config.JWT_REFRESH_SECRET;

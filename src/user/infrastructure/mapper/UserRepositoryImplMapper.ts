@@ -1,8 +1,8 @@
 import { InternalServerErrorException } from '@nestjs/common';
-import { UserEntitiy } from '../entity/UserEntity';
+import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { Password } from 'src/user/domain/Password';
 import { User } from 'src/user/domain/User';
-import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import { UserEntitiy } from '../entity/UserEntity';
 
 export class UserRepositoryImplMapper {
   static toDomain(entity: UserEntitiy): User {

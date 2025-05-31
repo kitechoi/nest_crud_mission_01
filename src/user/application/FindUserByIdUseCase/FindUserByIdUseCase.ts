@@ -3,7 +3,7 @@ import {
   USER_REPOSITORY,
   UserRepository,
 } from '../../infrastructure/UserRepository';
-import { FindUserByIdUseCaseRequest } from './dto/\bFindUserByIdUseCaseRequest';
+import { FindUserByIdUseCaseRequest } from './dto/FindUserByIdUseCaseRequest';
 import { FindUserByIdUseCaseResponse } from './dto/FindUserByIdUseCaseResponse';
 import { UseCase } from 'src/shared/core/application/UseCase';
 

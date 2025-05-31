@@ -2,7 +2,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { UseCase } from 'src/shared/core/application/UseCase';
 import {

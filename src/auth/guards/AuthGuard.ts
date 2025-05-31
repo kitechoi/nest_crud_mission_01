@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import {
   CanActivate,
   ExecutionContext,
@@ -5,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 import { config } from '../../shared/config/config';
 
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
