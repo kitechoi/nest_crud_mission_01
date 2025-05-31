@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { UseCase } from 'src/shared/core/application/UseCase';
@@ -51,14 +52,10 @@ export class UpdateArticleUseCase
         userId: article.userId,
       },
       article.id,
-    );
-
-    if (!updatedArticle.isSuccess) {
-      throw new BadRequestException(updatedArticle.error);
-    }
+    ).value;
 
     const savedArticle = await this.articleRepository.save(
-      updatedArticle.value,
+      updatedArticle,
       request.userIdFromDB,
     );
 

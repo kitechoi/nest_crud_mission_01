@@ -35,12 +35,12 @@ export class CreateLoginUseCase
     };
   }
 
-  // 비밀번호 유효성 검증, 유저 조회 및 pw 대조 검증 이 메서드에서 수행하고
-  // User를 반환하는 방식이 괜찮은가.
+  // Q. 이렇게 검증 메서드를 분리하는 것이 더 나은가?
   private async validateUser(
     request: CreateLoginUseCaseRequest,
   ): Promise<User> {
     const passwordResult = Password.create({ password: request.userPassword });
+    // Q. 아래 if문 없으면 유효하지 않은 pw여도 SELECT 쿼리 날림. 있으나 없으나 로그 메시지는 동일하게 찍힘. if문이 필요할까?
     if (!passwordResult.isSuccess) {
       throw new BadRequestException(passwordResult.error);
     }

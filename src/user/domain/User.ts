@@ -26,10 +26,10 @@ export class User extends AggregateRoot<UserProps> {
   static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     if (
       !props.username ||
-      props.username.length < 5 ||
+      props.username.length < 6 ||
       props.username.length > 20
     ) {
-      return Result.fail('아이디는 6글자 이상, 20자 이하로 입력해야 합니다.');
+      return Result.fail('Username must be between 6 and 20 characters.');
     }
 
     return Result.ok(new User(props, id));

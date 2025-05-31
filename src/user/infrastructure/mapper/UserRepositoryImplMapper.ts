@@ -4,7 +4,6 @@ import { Password } from 'src/user/domain/Password';
 import { User } from 'src/user/domain/User';
 import { UserEntitiy } from '../entity/UserEntity';
 
-
 export class UserRepositoryImplMapper {
   static toDomain(entity: UserEntitiy): User {
     const pwResult = Password.create({ password: entity.user_password });
