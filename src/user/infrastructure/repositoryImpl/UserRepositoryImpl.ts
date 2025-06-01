@@ -1,9 +1,9 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import { UserRepository } from "../UserRepository";
-import { UserEntitiy } from "../entity/UserEntity";
-import { Repository } from "typeorm";
-import { User } from "src/user/domain/User";
-import { UserRepositoryImplMapper } from "../mapper/UserRepositoryImplMapper";
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserRepository } from '../UserRepository';
+import { UserEntitiy } from '../entity/UserEntity';
+import { Repository } from 'typeorm';
+import { User } from 'src/user/domain/User';
+import { UserRepositoryImplMapper } from '../mapper/UserRepositoryImplMapper';
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(

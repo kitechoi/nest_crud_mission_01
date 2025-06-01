@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { ArticleModule } from './article/ArticleModule';
 import { AuthModule } from './auth/AuthModule';
 import { UserModule } from './user/UserModule';
-import { AuthController } from './auth/presentation/AuthController';
 import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 
@@ -44,7 +43,7 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
     UserModule,
   ],
 
-  controllers: [AppController, AuthController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

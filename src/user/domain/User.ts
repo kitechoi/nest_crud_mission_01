@@ -1,12 +1,14 @@
-import { Password } from 'src/user/domain/Password';
+import * as jwt from 'jsonwebtoken';
+import { config } from 'src/shared/config/config';
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { Result } from 'src/shared/core/domain/Result';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
-import * as jwt from 'jsonwebtoken';
-import { config } from 'src/shared/config/config';
+import { Password } from 'src/user/domain/Password';
 
 const JWT_ACCESS_SECRET = config.JWT_ACCESS_SECRET;
 const JWT_REFRESH_SECRET = config.JWT_REFRESH_SECRET;
+const JWT_ACCESS_EXPIRES_IN = config.JWT_ACCESS_EXPIRES_IN;
+const JWT_REFRESH_EXPIRES_IN = config.JWT_REFRESH_EXPIRES_IN;
 
 export interface UserProps {
   username: string;
@@ -24,10 +26,10 @@ export class User extends AggregateRoot<UserProps> {
   static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     if (
       !props.username ||
-      props.username.length < 5 ||
+      props.username.length < 6 ||
       props.username.length > 20
     ) {
-      return Result.fail('아이디는 6글자 이상, 20자 이하로 입력해야 합니다.');
+      return Result.fail('Username must be between 6 and 20 characters.');
     }
 
     return Result.ok(new User(props, id));
@@ -49,8 +51,6 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.nickname;
   }
 
-  // JWT Accesstoken 생성 로직을 UC가 아닌 USER 도메인이 갖는다
-  // 도메인은 인프라의 의존성을 주입 받으면 안 됨(JwtService 의 signAsync 같은 걸 쓸 수 없음)
   issueJWTAccessToken(): string {
     return jwt.sign(
       {
@@ -59,7 +59,7 @@ export class User extends AggregateRoot<UserProps> {
         nickname: this.props.nickname,
       },
       JWT_ACCESS_SECRET,
-      { expiresIn: '1d' }, // 하드코딩 수정 요망.
+      { expiresIn: JWT_ACCESS_EXPIRES_IN },
     );
   }
 
@@ -71,8 +71,7 @@ export class User extends AggregateRoot<UserProps> {
         nickname: this.props.nickname,
       },
       JWT_REFRESH_SECRET,
-      { expiresIn: '14d' }, // 하드코딩 수정 요망.
+      { expiresIn: JWT_REFRESH_EXPIRES_IN },
     );
   }
 }
-

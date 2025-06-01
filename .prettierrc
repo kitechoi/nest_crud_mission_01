@@ -1,5 +1,16 @@
 {
   "editor.formatOnSave": true,
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^@nestjs/(.*)$",
+    "^src/shared/(.*)$",
+    "^src/auth/(.*)$",
+    "^src/user/(.*)$",
+    "^src/article/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

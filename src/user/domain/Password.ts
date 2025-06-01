@@ -12,7 +12,9 @@ export class Password extends ValueObject<PasswordProps> {
 
   static create(props: PasswordProps): Result<Password> {
     if (!/^[a-zA-Z0-9]{8,20}$/.test(props.password)) {
-      return Result.fail('비밀번호는 8~20자의 영문자/숫자만 가능합니다.');
+      return Result.fail(
+        'Password must be 8–20 characters long, containing only letters and numbers.',
+      );
     }
     return Result.ok(new Password(props));
   }

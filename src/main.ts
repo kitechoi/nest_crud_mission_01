@@ -1,10 +1,10 @@
 import * as cookieParser from 'cookie-parser';
-import { AllExceptionsFilter } from './shared/filters/AllExceptionsFilter';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './shared/filters/AllExceptionsFilter';
 import { HttpRequestLoggingInterceptor } from './shared/interceptors/HttpRequestLogginInterceptor';
 import { HttpResponseLoggingInterceptor } from './shared/interceptors/HttpResponseLoggingInterceptor';
-import { initializeTransactionalContext } from 'typeorm-transactional';
 
 const bootstrap = async () => {
   initializeTransactionalContext();

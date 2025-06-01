@@ -1,19 +1,20 @@
+import { Transactional } from 'typeorm-transactional';
 import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  ForbiddenException,
   BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
+import { UseCase } from 'src/shared/core/application/UseCase';
+import { Article } from '../../domain/Article';
+import {
+  ARTICLE_REPOSITORY,
+  ArticleRepository,
+} from '../../infrastructure/ArticleRepository';
 import { UpdateArticleUseCaseRequest } from './dto/UpdateArticleUseCaseRequest';
 import { UpdateArticleUseCaseResponse } from './dto/UpdateArticleUseCaseResponse';
-import { Article } from '../../domain/Article';
-import { Password } from '../../../user/domain/Password';
-import {
-  ArticleRepository,
-  ARTICLE_REPOSITORY,
-} from '../../infrastructure/ArticleRepository';
-import { UseCase } from 'src/shared/core/application/UseCase';
 
 @Injectable()
 export class UpdateArticleUseCase
@@ -24,18 +25,20 @@ export class UpdateArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
+  @Transactional()
   async execute(
     request: UpdateArticleUseCaseRequest,
   ): Promise<UpdateArticleUseCaseResponse> {
-
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
-      throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
+      throw new NotFoundException('Article not found');
     }
 
     if (article.userId !== request.userIdFromDB) {
-      throw new ForbiddenException('작성자만 수정할 수 있습니다.');
+      throw new ForbiddenException(
+        'Only the author of the article can delete it',
+      );
     }
 
     const updatedArticle = Article.create(
@@ -49,14 +52,10 @@ export class UpdateArticleUseCase
         userId: article.userId,
       },
       article.id,
-    );
-
-    if (!updatedArticle.isSuccess) {
-      throw new BadRequestException(updatedArticle.error);
-    }
+    ).value;
 
     const savedArticle = await this.articleRepository.save(
-      updatedArticle.value,
+      updatedArticle,
       request.userIdFromDB,
     );
 

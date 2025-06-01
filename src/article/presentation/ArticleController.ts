@@ -1,5 +1,5 @@
+import { Request } from 'express';
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -14,16 +14,16 @@ import {
   Logger,
   UseGuards,
   Req,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
 import { CreateArticleUseCase } from '../application/CreateArticleUseCase/CreateArticleUseCase';
 import { DeleteArticleUseCase } from '../application/DeleteArticleUseCase/DeleteArticleUseCase';
 import { FindAllArticleUseCase } from '../application/FindAllArticleUseCase/FindAllArticleUseCase';
 import { UpdateArticleUseCase } from '../application/UpdateArticleUseCase/UpdateArticleUseCase';
+import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
 import {
   ArticleControllerCreateArticleRequestBody,
-  ArticleControllerDeleteArticleRequestBody,
   ArticleControllerDeleteArticleRequestParam,
   ArticleControllerFindAllArticleRequestQuery,
   ArticleControllerUpdateArticleRequestBody,
@@ -34,10 +34,6 @@ import {
   ArticleControllerUpdateArticleResponse,
   ArticleControllerFineAllArticleResponse,
 } from './dto/ArticleControllerResponse';
-import { JwtAuthGuard } from 'src/auth/guards/JwtAuthGuard';
-import { Request } from 'express';
-import { FindUserByIdUseCase } from 'src/user/application/FindUserByIdUseCase/FindUserByIdUseCase';
-import { MissionJwtPayload } from 'src/auth/strategies/JwtStrategy';
 
 @Controller('articles')
 export class ArticleController {
@@ -50,20 +46,19 @@ export class ArticleController {
     private readonly findUserByIdUseCase: FindUserByIdUseCase,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
   async createArticle(
     @Req() request: Request,
     @Body() body: ArticleControllerCreateArticleRequestBody,
   ): Promise<ArticleControllerCreateArticleResponse> {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
       const { id, username } = request.user;
-      console.log('username: ', username, 'id: ', id);
-      
+
       const { ok, article } = await this.createArticleUseCase.execute({
         userIdFromDB: id,
         username: username,
@@ -73,12 +68,12 @@ export class ArticleController {
       if (!ok) {
         throw new InternalServerErrorException();
       }
-      console.log(article);
+
       return {
         id: article.id.toNumber(),
         title: article.title,
         content: article.content,
-        username: username, // 유저 문자 아이디
+        username: username,
       };
     } catch (error) {
       this.logger.error(JSON.stringify(error));
@@ -86,18 +81,18 @@ export class ArticleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
   async deleteArticle(
     @Param() params: ArticleControllerDeleteArticleRequestParam,
     @Req() request: Request,
   ) {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
-      const { id, username } = request.user;
+      const { id } = request.user;
       const { ok } = await this.deleteArticleUseCase.execute({
         id: Number(params.id),
         userIdFromDB: id,
@@ -113,6 +108,7 @@ export class ArticleController {
     }
   }
 
+  // findAllArticleUseCase 안에서 User도 같이 반환해주는 건?
   @Get()
   @HttpCode(HttpStatus.OK)
   async getArticle(
@@ -150,9 +146,11 @@ export class ArticleController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseInterceptors()
+  // @UseFilters()
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
   async updateArticle(
     @Param() params: ArticleControllerUpdateArticleRequestParam,
     @Req() request: Request,
@@ -160,7 +158,7 @@ export class ArticleController {
   ): Promise<ArticleControllerUpdateArticleResponse> {
     try {
       if (!request.user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Missing User');
       }
       const { id, username } = request.user;
       const { ok, article } = await this.updateArticleUseCase.execute({

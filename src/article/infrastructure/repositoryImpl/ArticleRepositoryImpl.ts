@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ArticleRepository } from '../ArticleRepository';
 import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
-import { ArticleRepository } from '../ArticleRepository';
 import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapper';
-import { UserEntitiy } from 'src/user/infrastructure/entity/UserEntity';
 
 @Injectable()
 export class ArticleRepositoryImpl implements ArticleRepository {

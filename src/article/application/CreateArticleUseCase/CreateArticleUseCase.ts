@@ -1,15 +1,13 @@
-import { Injectable, Inject, BadRequestException, InternalServerErrorException } from '@nestjs/common';
-import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
-import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
-import { Article } from '../../domain/Article';
-import { Password } from '../../../user/domain/Password';
-import {
-  ArticleRepository,
-  ARTICLE_REPOSITORY,
-} from '../../infrastructure/ArticleRepository';
+import { Inject, Injectable } from '@nestjs/common';
 import { UseCase } from 'src/shared/core/application/UseCase';
 import { Transactional } from 'typeorm-transactional';
-
+import { Article } from '../../domain/Article';
+import {
+  ARTICLE_REPOSITORY,
+  ArticleRepository,
+} from '../../infrastructure/ArticleRepository';
+import { CreateArticleUseCaseRequest } from './dto/CreateArticleUseCaseRequest';
+import { CreateArticleUseCaseResponse } from './dto/CreateArticleUseCaseResponse';
 
 @Injectable()
 export class CreateArticleUseCase
@@ -24,23 +22,17 @@ export class CreateArticleUseCase
   async execute(
     request: CreateArticleUseCaseRequest,
   ): Promise<CreateArticleUseCaseResponse> {
-    console.log('어노테이션 안');
-    const articleResult = Article.createNew({
+    const article = Article.createNew({
       title: request.title,
       content: request.content,
       userId: request.userIdFromDB,
-    });
-
-    if (!articleResult.isSuccess) {
-      throw new BadRequestException(articleResult.error);
-    }
-    console.log('articleResult.value로그: ',articleResult.value);
+    }).value;
 
     const savedArticle = await this.articleRepository.save(
-      articleResult.value, request.userIdFromDB);
-      
-    // throw new Error('롤백 테스트용 강제 예외');
-    
+      article,
+      request.userIdFromDB,
+    );
+
     return {
       ok: true,
       article: savedArticle,

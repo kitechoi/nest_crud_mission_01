@@ -1,18 +1,16 @@
 import {
-  Injectable,
-  Inject,
-  NotFoundException,
   ForbiddenException,
-  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
-import { DeleteArticleUseCaseRequest } from './dto/DeleteArticleUseCaseRequest';
-import { Password } from '../../../user/domain/Password';
-import {
-  ArticleRepository,
-  ARTICLE_REPOSITORY,
-} from '../../infrastructure/ArticleRepository';
-import { DeleteArticleUseCaseResponse } from './dto/DeleteArticleUseCaseResponse';
 import { UseCase } from 'src/shared/core/application/UseCase';
+import {
+  ARTICLE_REPOSITORY,
+  ArticleRepository,
+} from '../../infrastructure/ArticleRepository';
+import { DeleteArticleUseCaseRequest } from './dto/DeleteArticleUseCaseRequest';
+import { DeleteArticleUseCaseResponse } from './dto/DeleteArticleUseCaseResponse';
 
 @Injectable()
 export class DeleteArticleUseCase
@@ -23,18 +21,19 @@ export class DeleteArticleUseCase
     private readonly articleRepository: ArticleRepository,
   ) {}
 
-  // @Transactional()
   async execute(
     request: DeleteArticleUseCaseRequest,
   ): Promise<DeleteArticleUseCaseResponse> {
     const article = await this.articleRepository.findById(request.id);
 
     if (!article) {
-      throw new NotFoundException('해당 게시글이 존재하지 않습니다.');
+      throw new NotFoundException('Article not found');
     }
 
     if (article.userId !== request.userIdFromDB) {
-      throw new ForbiddenException('작성자만 삭제할 수 있습니다.');
+      throw new ForbiddenException(
+        'Only the author of the article can delete it',
+      );
     }
 
     await this.articleRepository.delete(request.id);
