@@ -8,9 +8,10 @@ import { FindUserByIdUseCase } from './application/FindUserByIdUseCase/FindUserB
 import { CreateLoginUseCase } from './application/CreateLoginUseCase/CreateLoginUseCase';
 import { UserController } from './presentation/UserController';
 import { CreateReissuedAccessTokenUseCase } from './application/CreateReissuedAccessTokenUseCase/CreateReissuedAccessTokenUseCase';
+import { AuthModule } from 'src/auth/AuthModule';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntitiy])],
+  imports: [TypeOrmModule.forFeature([UserEntitiy]), AuthModule],
   controllers: [UserController],
   providers: [
     FindUserByUsernameUseCase,
