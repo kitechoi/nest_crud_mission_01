@@ -21,7 +21,7 @@ export class ArticleEntity extends BaseEntity {
   @Column()
   content: string;
 
-  @ManyToOne(() => UserEntitiy)
+  @ManyToOne(() => UserEntitiy, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: UserEntitiy;
 
