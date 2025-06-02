@@ -18,7 +18,7 @@ export class ArticleRepositoryImplMapper {
     const user = new UserEntitiy();
 
     user.id = Number(userIdFromDB);
-    entity.user = user;
+    entity.user_id = user.id;
 
     return entity;
   }
@@ -28,7 +28,7 @@ export class ArticleRepositoryImplMapper {
       {
         title: entity.title,
         content: entity.content,
-        userId: entity.user.id,
+        userId: entity.user_id,
       },
       UniqueEntityID.create(entity.id),
     );

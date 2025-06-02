@@ -6,7 +6,10 @@ import {
 } from '../../infrastructure/ArticleRepository';
 import { FindAllArticleUseCaseRequest } from './dto/FindAllArticleUseCaseRequest';
 import { FindAllArticleUseCaseResponse } from './dto/FindAllArticleUseCaseResponse';
-import { USER_REPOSITORY, UserRepository } from 'src/user/infrastructure/UserRepository';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from 'src/user/infrastructure/UserRepository';
 
 @Injectable()
 export class FindAllArticleUseCase
@@ -32,12 +35,13 @@ export class FindAllArticleUseCase
       user = await this.userRepository.findByUsername(username);
     }
 
+    const userId = user ? user.id : undefined;
+
     const articles = await this.articleRepository.findAll(
       limit,
       offset,
-      user ? user.id.toString() : undefined,
+      userId,
     );
-
 
     return {
       ok: true,

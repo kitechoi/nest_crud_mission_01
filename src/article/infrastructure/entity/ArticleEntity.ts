@@ -25,8 +25,11 @@ export class ArticleEntity extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntitiy;
 
-  // @Column()
-  // user_id: string;
+  // @Column({ name: 'user_id' })
+  // userId: number;
+
+  @Column()
+  user_id: number;
 
   @CreateDateColumn()
   created_at: Date;
