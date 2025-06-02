@@ -13,6 +13,7 @@ export class ArticleRepositoryImpl implements ArticleRepository {
     private readonly articleEntityRepository: Repository<ArticleEntity>,
   ) {}
 
+  // typeorm의 save를 사용했기에, toEntity가 필요해짐.
   async save(article: Article, userIdFromDB: number): Promise<Article> {
     const entity = await this.articleEntityRepository.save(
       ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
@@ -35,7 +36,7 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   async findAll(
     limit: number,
     offset: number,
-    username?: string,
+    userId?: string,
   ): Promise<Article[]> {
     const queryBuilder = this.articleEntityRepository
       .createQueryBuilder('article')
@@ -44,8 +45,8 @@ export class ArticleRepositoryImpl implements ArticleRepository {
       .take(limit)
       .skip(offset);
 
-    if (username) {
-      queryBuilder.where('user.username = :username', { username });
+    if (userId) {
+      queryBuilder.where('article.user_id = :userId', { userId });
     }
 
     const entities = await queryBuilder.getMany();
