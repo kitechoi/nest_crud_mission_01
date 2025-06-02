@@ -1,4 +1,3 @@
-import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
 import { User } from 'src/user/domain/User';
 import { Article } from '../domain/Article';
 
@@ -9,7 +8,7 @@ export interface ArticleRepository {
   findAll(
     limit: number,
     offset: number,
-    userId?: UniqueEntityID,
+    username?: string,
   ): Promise<{ articles: Article[]; users: User[] }>;
   findById(id: number): Promise<Article | null>;
   delete(id: number): Promise<void>;

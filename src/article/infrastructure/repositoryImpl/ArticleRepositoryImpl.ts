@@ -59,7 +59,7 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   async findAll(
     limit: number,
     offset: number,
-    userId?: UniqueEntityID,
+    username?: string,
   ): Promise<{ articles: Article[]; users: User[] }> {
     const queryBuilder = this.articleEntityRepository
       .createQueryBuilder('article')
@@ -68,10 +68,8 @@ export class ArticleRepositoryImpl implements ArticleRepository {
       .take(limit)
       .skip(offset);
 
-    if (userId) {
-      queryBuilder.where('article.user_id = :userId', {
-        userId: userId.toNumber(),
-      });
+    if (username) {
+      queryBuilder.where('user.username = :username', { username });
     }
 
     const entities = await queryBuilder.getMany();

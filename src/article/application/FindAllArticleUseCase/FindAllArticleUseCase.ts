@@ -29,18 +29,10 @@ export class FindAllArticleUseCase
     const { page, limit, username } = request;
     const offset = (page - 1) * limit;
 
-    let user = null;
-
-    if (username) {
-      user = await this.userRepository.findByUsername(username);
-    }
-
-    const userId = user ? user.id : undefined;
-
     const { articles, users } = await this.articleRepository.findAll(
       limit,
       offset,
-      userId,
+      username,
     );
 
     return {
