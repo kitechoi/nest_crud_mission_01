@@ -61,7 +61,6 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   async findById(id: number): Promise<Article | null> {
     const entity = await this.articleEntityRepository
       .createQueryBuilder('article')
-      .leftJoinAndSelect('article.user', 'user')
       .where('article.id = :id', { id })
       .getOne();
 
