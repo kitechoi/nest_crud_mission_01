@@ -127,6 +127,7 @@ export class ArticleController {
 
       return Promise.all(
         articles.map(async (article) => {
+          // user 조회 N+1
           const { user } = await this.findUserByIdUseCase.execute({
             id: article.userId,
           });
