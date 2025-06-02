@@ -6,6 +6,10 @@ import {
 } from '../../infrastructure/ArticleRepository';
 import { FindAllArticleUseCaseRequest } from './dto/FindAllArticleUseCaseRequest';
 import { FindAllArticleUseCaseResponse } from './dto/FindAllArticleUseCaseResponse';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from 'src/user/infrastructure/UserRepository';
 
 @Injectable()
 export class FindAllArticleUseCase
@@ -15,6 +19,8 @@ export class FindAllArticleUseCase
   constructor(
     @Inject(ARTICLE_REPOSITORY)
     private readonly articleRepository: ArticleRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
   ) {}
 
   async execute(
@@ -23,7 +29,7 @@ export class FindAllArticleUseCase
     const { page, limit, username } = request;
     const offset = (page - 1) * limit;
 
-    const articles = await this.articleRepository.findAll(
+    const { articles, users } = await this.articleRepository.findAll(
       limit,
       offset,
       username,
@@ -32,6 +38,7 @@ export class FindAllArticleUseCase
     return {
       ok: true,
       articles: articles,
+      users: users,
     };
   }
 }

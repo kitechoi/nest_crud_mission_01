@@ -28,6 +28,7 @@ import { AuthModule } from 'src/auth/AuthModule';
     FindUserByIdUseCase,
     CreateLoginUseCase,
     CreateReissuedAccessTokenUseCase,
+    USER_REPOSITORY,
   ],
 })
 export class UserModule {}

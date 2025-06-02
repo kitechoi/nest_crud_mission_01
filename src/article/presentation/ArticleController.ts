@@ -108,14 +108,13 @@ export class ArticleController {
     }
   }
 
-  // findAllArticleUseCase 안에서 User도 같이 반환해주는 건?
   @Get()
   @HttpCode(HttpStatus.OK)
   async getArticle(
     @Query() query: ArticleControllerFindAllArticleRequestQuery,
   ): Promise<ArticleControllerFineAllArticleResponse[]> {
     try {
-      const { ok, articles } = await this.findAllArticleUseCase.execute({
+      const { ok, articles, users } = await this.findAllArticleUseCase.execute({
         page: Number(query.page),
         limit: Number(query.limit),
         username: query.username,
@@ -125,21 +124,23 @@ export class ArticleController {
         throw new InternalServerErrorException();
       }
 
-      return Promise.all(
-        articles.map(async (article) => {
-          const { user } = await this.findUserByIdUseCase.execute({
-            id: article.userId,
-          });
+      return articles.map((article) => {
+        const user = users.find(
+          (user) => user.id.toNumber() === article.userId,
+        );
 
-          return {
-            id: article.id.toNumber(),
-            title: article.title,
-            content: article.content,
-            username: user.username,
-            nickname: user.nickname,
-          };
-        }),
-      );
+        if (!user) {
+          throw new InternalServerErrorException();
+        }
+
+        return {
+          id: article.id.toNumber(),
+          title: article.title,
+          content: article.content,
+          username: user.username,
+          nickname: user.nickname,
+        };
+      });
     } catch (error) {
       this.logger.error(JSON.stringify(error));
       throw error;

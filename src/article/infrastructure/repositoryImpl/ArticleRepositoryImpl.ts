@@ -5,6 +5,9 @@ import { ArticleRepository } from '../ArticleRepository';
 import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapper';
+import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import { UserRepositoryImplMapper } from 'src/user/infrastructure/mapper/UserRepositoryImplMapper';
+import { User } from 'src/user/domain/User';
 
 @Injectable()
 export class ArticleRepositoryImpl implements ArticleRepository {
@@ -14,29 +17,50 @@ export class ArticleRepositoryImpl implements ArticleRepository {
   ) {}
 
   async save(article: Article, userIdFromDB: number): Promise<Article> {
-    const entity = await this.articleEntityRepository.save(
-      ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
-    );
-    // 트랜잭션 중첩될 때 어떻게
-    // 두 개일 때
-    // 바깥 트랜잭션, typeorm 트랜젹선 어떻게 관리.
-    // 트랜잭션 격리 수준
-    return ArticleRepositoryImplMapper.toDomain(entity);
-  }
+    const isNewDomain = article.id.isNewIdentifier();
 
-  // async saveTemp(article: Article, userIdFromDB: number): Promise<ArticleEntity> {
-  //   const entity = await this.articleEntityRepository.save(
-  //     ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
-  //   );
-  //   // return ArticleRepositoryImplMapper.toDomain(entity);
-  //   return entity;
-  // }
+    if (isNewDomain) {
+      const insertResult = await this.articleEntityRepository
+        .createQueryBuilder()
+        .insert()
+        .into(ArticleEntity)
+        .values({
+          title: article.title,
+          content: article.content,
+          user_id: userIdFromDB,
+        })
+        .execute();
+
+      const insertId = insertResult.raw.insertId;
+
+      return Article.create(
+        {
+          title: article.title,
+          content: article.content,
+          userId: userIdFromDB,
+        },
+        new UniqueEntityID(insertId),
+      ).value;
+    } else {
+      await this.articleEntityRepository
+        .createQueryBuilder()
+        .update(ArticleEntity)
+        .set({
+          title: article.title,
+          content: article.content,
+        })
+        .where('id = :id', { id: article.id.toNumber() })
+        .execute();
+
+      return article;
+    }
+  }
 
   async findAll(
     limit: number,
     offset: number,
     username?: string,
-  ): Promise<Article[]> {
+  ): Promise<{ articles: Article[]; users: User[] }> {
     const queryBuilder = this.articleEntityRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.user', 'user')
@@ -50,15 +74,20 @@ export class ArticleRepositoryImpl implements ArticleRepository {
 
     const entities = await queryBuilder.getMany();
 
-    return entities.map((entity) =>
+    const articles = entities.map((entity) =>
       ArticleRepositoryImplMapper.toDomain(entity),
     );
+
+    const users = entities.map((entity) => {
+      return UserRepositoryImplMapper.toDomain(entity.user);
+    });
+
+    return { articles, users };
   }
 
   async findById(id: number): Promise<Article | null> {
     const entity = await this.articleEntityRepository
       .createQueryBuilder('article')
-      .leftJoinAndSelect('article.user', 'user')
       .where('article.id = :id', { id })
       .getOne();
 
