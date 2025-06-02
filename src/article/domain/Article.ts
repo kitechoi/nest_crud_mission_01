@@ -1,11 +1,16 @@
 import { AggregateRoot } from 'src/shared/core/domain/AggregateRoot';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import { User } from 'src/user/domain/User';
 import { Result } from '../../shared/core/domain/Result';
 
 export interface ArticleProps {
   title: string;
   content: string;
   userId: number;
+}
+
+export interface ExtendedArticleProps extends ArticleProps {
+  user: User;
 }
 
 export class Article extends AggregateRoot<ArticleProps> {

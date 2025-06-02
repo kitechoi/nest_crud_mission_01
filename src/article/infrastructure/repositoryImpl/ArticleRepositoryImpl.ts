@@ -6,6 +6,8 @@ import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
 import { ArticleRepositoryImplMapper } from '../mapper/ArticleRepositoryImplMapper';
 import { UniqueEntityID } from 'src/shared/core/domain/UniqueEntityID';
+import { UserRepositoryImplMapper } from 'src/user/infrastructure/mapper/UserRepositoryImplMapper';
+import { User } from 'src/user/domain/User';
 
 @Injectable()
 export class ArticleRepositoryImpl implements ArticleRepository {
@@ -58,9 +60,10 @@ export class ArticleRepositoryImpl implements ArticleRepository {
     limit: number,
     offset: number,
     userId?: UniqueEntityID,
-  ): Promise<Article[]> {
+  ): Promise<{ articles: Article[]; users: User[] }> {
     const queryBuilder = this.articleEntityRepository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
       .orderBy('article.created_at', 'DESC')
       .take(limit)
       .skip(offset);
@@ -73,9 +76,15 @@ export class ArticleRepositoryImpl implements ArticleRepository {
 
     const entities = await queryBuilder.getMany();
 
-    return entities.map((entity) =>
+    const articles = entities.map((entity) =>
       ArticleRepositoryImplMapper.toDomain(entity),
     );
+
+    const users = entities.map((entity) => {
+      return UserRepositoryImplMapper.toDomain(entity.user);
+    });
+
+    return { articles, users };
   }
 
   async findById(id: number): Promise<Article | null> {

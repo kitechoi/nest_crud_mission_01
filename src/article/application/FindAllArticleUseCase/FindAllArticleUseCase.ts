@@ -37,7 +37,7 @@ export class FindAllArticleUseCase
 
     const userId = user ? user.id : undefined;
 
-    const articles = await this.articleRepository.findAll(
+    const { articles, users } = await this.articleRepository.findAll(
       limit,
       offset,
       userId,
@@ -46,6 +46,7 @@ export class FindAllArticleUseCase
     return {
       ok: true,
       articles: articles,
+      users: users,
     };
   }
 }
