@@ -14,25 +14,45 @@ export class ArticleRepositoryImpl implements ArticleRepository {
     private readonly articleEntityRepository: Repository<ArticleEntity>,
   ) {}
 
-  // typeorm의 save를 사용했기에, toEntity가 필요해짐.
   async save(article: Article, userIdFromDB: number): Promise<Article> {
-    const entity = await this.articleEntityRepository.save(
-      ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
-    );
-    // 트랜잭션 중첩될 때 어떻게
-    // 두 개일 때
-    // 바깥 트랜잭션, typeorm 트랜젹선 어떻게 관리.
-    // 트랜잭션 격리 수준
-    return ArticleRepositoryImplMapper.toDomain(entity);
-  }
+    const isNewDomain = article.id.isNewIdentifier();
 
-  // async saveTemp(article: Article, userIdFromDB: number): Promise<ArticleEntity> {
-  //   const entity = await this.articleEntityRepository.save(
-  //     ArticleRepositoryImplMapper.toEntity(article, userIdFromDB),
-  //   );
-  //   // return ArticleRepositoryImplMapper.toDomain(entity);
-  //   return entity;
-  // }
+    if (isNewDomain) {
+      const insertResult = await this.articleEntityRepository
+        .createQueryBuilder()
+        .insert()
+        .into(ArticleEntity)
+        .values({
+          title: article.title,
+          content: article.content,
+          user_id: userIdFromDB,
+        })
+        .execute();
+
+      const insertId = insertResult.raw.insertId;
+
+      return Article.create(
+        {
+          title: article.title,
+          content: article.content,
+          userId: userIdFromDB,
+        },
+        new UniqueEntityID(insertId),
+      ).value;
+    } else {
+      await this.articleEntityRepository
+        .createQueryBuilder()
+        .update(ArticleEntity)
+        .set({
+          title: article.title,
+          content: article.content,
+        })
+        .where('id = :id', { id: article.id.toNumber() })
+        .execute();
+
+      return article;
+    }
+  }
 
   async findAll(
     limit: number,

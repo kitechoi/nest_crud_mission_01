@@ -5,24 +5,6 @@ import { Article } from '../../domain/Article';
 import { ArticleEntity } from '../entity/ArticleEntity';
 
 export class ArticleRepositoryImplMapper {
-  static toEntity(article: Article, userIdFromDB: number): ArticleEntity {
-    const entity = new ArticleEntity();
-
-    if (article.id) {
-      entity.id = article.id.toNumber();
-    }
-
-    entity.title = article.title;
-    entity.content = article.content;
-
-    const user = new UserEntitiy();
-
-    user.id = Number(userIdFromDB);
-    entity.user_id = user.id;
-
-    return entity;
-  }
-
   static toDomain(entity: ArticleEntity): Article {
     const articleResult = Article.create(
       {
