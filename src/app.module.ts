@@ -26,7 +26,7 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
           database: process.env.MYSQL_DATABASE,
           name: 'default',
           entities: [__dirname + '/**/entity/*Entity{.ts,.js}'],
-          synchronize: true,
+          synchronize: false,
           logging: true,
         };
       },
