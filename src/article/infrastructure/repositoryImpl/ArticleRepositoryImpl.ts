@@ -39,7 +39,7 @@ export class ArticleRepositoryImpl implements ArticleRepository {
           content: article.content,
           userId: userIdFromDB,
         },
-        new UniqueEntityID(insertId),
+        UniqueEntityID.create(insertId),
       ).value;
     } else {
       await this.articleEntityRepository
